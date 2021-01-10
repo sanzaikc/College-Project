@@ -1,29 +1,61 @@
-import Vue from 'vue'
+import Vue from 'vue';
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import {routes} from './routes'
+import store from '../store/index'
 
-Vue.use(VueRouter)
+import middlewarePipeline from './middlewarePipeline'
 
-const routes = [
-  {
-    path: '/',
-    name: 'Home',
-    component: Home
-  },
-  {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  }
-]
+Vue.use(VueRouter);
 
-const router = new VueRouter({
+export const router = new VueRouter({
   mode: 'history',
-  base: process.env.BASE_URL,
-  routes
-})
+  routes,
+});
 
-export default router
+// router.beforeEach((to, from, next) => {
+//   if (to.matched.some((record) => record.meta.auth)) {
+// 		if (!store.getters.loggedIn) {
+// 			next({
+// 				path: "/login",
+// 			});
+// 		} else {
+// 			next();
+// 		}
+// 	} else if (to.matched.some((record) => record.meta.guest)) {
+// 		if (store.getters.loggedIn) {
+// 			if (store.state.auth.currentUser.is_admin)
+// 				next({
+// 					path: "/admin",
+// 				});
+// 			else
+// 				next({
+// 					path: "/host",
+// 				});
+// 		} else {
+// 			next();
+// 		}
+// 	} else {
+// 		next();
+// 	}
+// })
+
+router.beforeEach((to, from, next) => {
+	if (!to.meta.middleware) {
+		return next()
+	}
+	const middleware = to.meta.middleware
+
+	const context = {
+		to,
+		from,
+		next,
+		store
+	}
+
+
+	return middleware[0]({
+		...context,
+		next: middlewarePipeline(context, middleware, 1)
+	})
+
+});

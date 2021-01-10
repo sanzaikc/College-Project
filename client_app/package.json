@@ -1,25 +1,37 @@
 {
-  "name": "client_app",
+  "name": "lquiz",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "axios": "^0.19.2",
+    "bootstrap-vue": "^2.15.0",
     "core-js": "^3.6.5",
+    "es6-promise-promise": "^1.0.0",
+    "gsap": "^3.4.2",
+    "js-cookie": "^2.2.1",
+    "laravel-echo": "^1.8.1",
+    "moment": "^2.27.0",
+    "pusher-js": "^7.0.0",
+    "vee-validate": "^3.3.7",
     "vue": "^2.6.11",
-    "vue-router": "^3.2.0",
-    "vuesax": "^4.0.1-alpha.25",
-    "vuex": "^3.4.0"
+    "vue-fab": "^2.3.1",
+    "vue-router": "^3.3.4",
+    "vue-toasted": "^1.1.28",
+    "vuex-persist": "^2.2.0"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.5.0",
-    "@vue/cli-plugin-router": "~4.5.0",
-    "@vue/cli-plugin-vuex": "~4.5.0",
-    "@vue/cli-service": "~4.5.0",
-    "node-sass": "^4.12.0",
-    "sass-loader": "^8.0.2",
-    "vue-template-compiler": "^2.6.11"
+    "@vue/cli-plugin-babel": "~4.4.0",
+    "@vue/cli-plugin-eslint": "~4.4.0",
+    "@vue/cli-service": "~4.4.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-vue": "^6.2.2",
+    "vue-template-compiler": "^2.6.11",
+    "vuex": "^3.5.1"
   }
 }
