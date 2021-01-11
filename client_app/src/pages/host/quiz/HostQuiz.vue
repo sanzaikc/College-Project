@@ -16,13 +16,13 @@
         <div v-if="players">
             <div class="my-4" v-show="!start">
                 <h5>Participants:</h5>
-                <h5 v-for="(player, index) in players" 
-                    :key="player.id" 
+                <h5 v-for="(player, index) in players"
+                    :key="player.id"
                     class="text-info">  {{ index + 1 + '.'}} {{ player.name }}
                 </h5>
             </div>
             <button v-show="!start"
-                class="btn btn-outline-primary btn-block w-25" 
+                class="btn btn-outline-primary btn-block w-25"
                 style="position: fixed; bottom: 5%; left: 45%"
                 @click="startGame">Start Quiz
             </button>
@@ -33,13 +33,13 @@
                     <div class="p-4 border rounded col-md-8">
                         <h2> {{ questions[qIndex].body }} </h2>
                         <hr>
-                        <h4 v-for="(option, index) in questions[qIndex].options" 
-                            :key="option.id" 
-                            class="text-secondary bg-light rounded-pill px-3 py-2 w-50"> {{ index + 1 + '.'}}  {{ option.body }} 
+                        <h4 v-for="(option, index) in questions[qIndex].options"
+                            :key="option.id"
+                            class="text-secondary bg-light rounded-pill px-3 py-2 w-50"> {{ index + 1 + '.'}}  {{ option.body }}
                         </h4>
                         <div class="float-right w-25">
                             <button v-if="!lastQuestion" @click="next" class="btn btn-outline-primary btn-block" >Next Question</button>
-                            <button v-else @click="finish" class="btn btn-outline-danger btn-block" >End Quiz</button>     
+                            <button v-else @click="finish" class="btn btn-outline-danger btn-block" >End Quiz</button>
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -68,7 +68,6 @@
 
 <script>
 import { mapMutations, mapState, mapGetters } from 'vuex';
-import axios from 'axios';
 export default {
     mounted(){
         this.QUIZ_DETAIL(this.$route.params.id);
@@ -107,7 +106,7 @@ export default {
             this.selectText(this.$refs.pin);
             try {
                 if(document.execCommand('copy')){
-                    this.copied = true;   
+                    this.copied = true;
                     this.$toasted.show('Pin Copied');
                 }
             } catch (err) {
@@ -123,31 +122,33 @@ export default {
             //     alert("Not enough participants")
             // }
         },
-        currentQ(id){
-            axios.post('quizzes/' + this.quizDetail.id, {
-                current_question: id
-            })
-            // .then(res => {
-            //     console.log(res);
-            // })
-            // .catch(error => console.log(error));
+        async currentQ(id){
+            try {
+                let {status} = await this.$store.dispatch('changeCurrentQuestion', {quizId: this.quizDetail.id, questionId: id});
+                if(status === 200){
+                    console.log('Success');
+                }
+            } catch (error) {
+                console.log(error);
+            }
         },
         next(){
             this.qIndex ++;
             this.currentQ(this.questions[this.qIndex].id);
         },
-        finish(){
+        async finish(){
             if(confirm("End this Quiz? ")){
-                axios.post('quizzes/end/' + this.quizDetail.id)
-                    .then(res => {
-                        if(res){
-                            this.$toasted.show("Quiz terminated", {
-                                theme: "bubble"
-                            });
-                            this.$router.push({ name: 'host.quiz'});
-                        }
-                    })
-                    .catch(error => console.log(error.response.data));
+                try {
+                    let res = await this.$store.dispatch('endQuiz', this.quizDetail.id);
+                    if(res){
+                        this.$toasted.show("Quiz terminated", {
+                            theme: "bubble"
+                        });
+                        this.$router.push({ name: 'host.quiz'});
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
             }
         }
     },
