@@ -1,7 +1,7 @@
 <template>
   <div class="container h-75 d-flex align-items-center">
     <div v-if="quizHasStarted" class="p-4 rounded w-100">
-      <PlayerView :currentQuestion="currentQuestion" />
+      <PlayerView :currentQuestion="currentQuestion" :playerId="player.id" />
     </div>
     <div v-else>
       <h2>Hi, {{ player.name }}</h2>

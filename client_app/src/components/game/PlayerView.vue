@@ -20,6 +20,7 @@
 <script>
   export default {
     props: {
+      playerId: { type: Number },
       currentQuestion: { type: Object },
     },
 
@@ -65,6 +66,10 @@
         setTimeout(() => {
           if (this.correctAns) {
             this.ansStatus = "correct";
+            this.$store.dispatch("submitScore", {
+              playerId: this.playerId,
+              score: 1,
+            });
           } else {
             this.ansStatus = "wrong";
           }

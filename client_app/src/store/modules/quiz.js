@@ -208,6 +208,20 @@ const actions = {
         .catch((error) => reject(error.response.data));
     });
   },
+
+  submitScore: (context, { playerId, score }) => {
+    return new Promise((resolve, reject) => {
+      $axios
+        .post("/score", {
+          player_id: playerId,
+          score,
+        })
+        .then((res) => {
+          if (res.status == 200) resolve(res.data);
+        })
+        .catch((error) => reject(error.response.data));
+    });
+  },
 };
 
 const getters = {

@@ -28,28 +28,20 @@
       </div>
     </div>
     <div class="col-md-4">
-      <b-card no-body header="Scoreboard">
-        <b-list-group flush>
-          <b-list-group-item
-            v-for="(player, index) in players"
-            :key="index"
-            class="d-flex justify-content-between align-items-center"
-          >
-            <p class="m-0">
-              <b-badge variant="success" class="py-1 mr-2" pill>1st</b-badge>
-              {{ player.name }}
-            </p>
-            30
-          </b-list-group-item>
-        </b-list-group>
-      </b-card>
+      <Scoreboard :quizId="quizId" />
     </div>
   </div>
 </template>
 
 <script>
+  import Scoreboard from "@/components/hostQuiz/Scoreboard";
   import { mapState } from "vuex";
+
   export default {
+    components: {
+      Scoreboard,
+    },
+
     props: {
       allQuestions: { type: Array },
       players: { type: Array },
