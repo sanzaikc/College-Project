@@ -29,14 +29,16 @@
     </div>
     <div v-if="players">
       <div class="my-4" v-show="!start">
-        <h5>Participants:</h5>
-        <h5
-          v-for="(player, index) in players"
-          :key="player.id"
-          class="text-info"
-        >
-          {{ index + 1 + "." }} {{ player.name }}
-        </h5>
+        <div>
+          <h5>Participants:</h5>
+          <h5
+            v-for="(player, index) in players"
+            :key="player.id"
+            class="text-info"
+          >
+            {{ index + 1 + "." }} {{ player.name }}
+          </h5>
+        </div>
       </div>
       <button
         v-show="!start"
@@ -82,11 +84,11 @@
         quizDetail: (state) => state.quiz.quizDetail,
       }),
 
+      ...mapGetters(["players"]),
+
       allQuestions() {
         return this.quizDetail.questions;
       },
-
-      ...mapGetters(["players"]),
     },
 
     created() {

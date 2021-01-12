@@ -28,7 +28,7 @@
       </div>
     </div>
     <div class="col-md-4">
-      <Scoreboard :quizId="quizId" />
+      <Scoreboard :quizId="quizId" :players="players" />
     </div>
   </div>
 </template>

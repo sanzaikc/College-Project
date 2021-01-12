@@ -7,7 +7,9 @@
         class="d-flex justify-content-between align-items-center"
       >
         <p class="m-0">
-          <b-badge variant="success" class="py-1 mr-2" pill>1st</b-badge>
+          <b-badge variant="success" class="py-1 mr-2" pill>
+            {{ playerPosition(player) }}
+          </b-badge>
           {{ player.name }}
         </p>
         30
@@ -20,6 +22,7 @@
   export default {
     props: {
       quizId: { type: Number },
+      players: { type: Array },
     },
 
     created() {
@@ -27,10 +30,10 @@
     },
 
     data() {
-      return {
-        players: [],
-      };
+      return {};
     },
+
+    computed: {},
 
     methods: {
       listenForScoreChange() {
@@ -40,6 +43,10 @@
             console.log(e);
           }
         );
+      },
+
+      playerPosition(player) {
+        console.log(player);
       },
     },
   };
