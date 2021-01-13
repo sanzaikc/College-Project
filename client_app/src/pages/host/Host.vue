@@ -1,7 +1,8 @@
 <template>
 	<div class="row h-100">
-		<div class="col-md-2 bg-light">
+		<div v-if="!isSidebarHidden" class="col-md-2 bg-light">
 			<b-nav vertical class="w-100 text py-3">
+				<h1 v-text="currentRouteName"/>
 				<router-link
 					:to="{ name: 'host.home' }"
 					tag="b-nav-item"
@@ -45,7 +46,7 @@
 				</router-link>
 			</b-nav>
 		</div>
-		<div class="col-md-10 pl-4 py-3 bg-white">
+		<div class="col-md-10 pl-4 py-3 bg-white" :class="{'col-md-12' : isSidebarHidden, 'col-md-10': !isSidebarHidden}">
 			<transition name="slide-fade" mode="out-in">
 				<router-view></router-view>
 			</transition>
@@ -63,6 +64,9 @@ export default {
 		...mapState({
 			'disabled': (state) => state.auth.currentUser.is_disabled,
 		}),
+		isSidebarHidden() {
+      return this.$route.name === 'quiz.start';
+    }
 	}
 
 };
