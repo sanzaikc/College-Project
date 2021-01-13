@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\QuestionChanged;
+use App\Events\QuizEnded;
 use App\Question;
 use App\Quiz;
 use Illuminate\Http\Request;
@@ -87,6 +88,8 @@ class QuizController extends Controller {
   }
 
   public function end(Quiz $quiz) {
+    $endedQuiz = Quiz::with(['players', 'players.score'])->where('id', $quiz->id)->first();
+    event(new QuizEnded($endedQuiz));
     $quiz->update([
       'pin' => null,
     ]);

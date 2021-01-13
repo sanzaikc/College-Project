@@ -13,6 +13,6 @@ class Player extends Model {
   }
 
   public function score() {
-    return $this->belongsTo(Score::class);
+    return $this->hasOne(Score::class);
   }
 }

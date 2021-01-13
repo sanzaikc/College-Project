@@ -15,6 +15,7 @@ class EventServiceProvider extends ServiceProvider {
     'App\Events\PlayerJoined' => [],
     'App\Events\QuestionChanged' => [],
     'App\Events\ScoreChanged' => [],
+    'App\Events\QuizEnded' => [],
   ];
 
   /**
