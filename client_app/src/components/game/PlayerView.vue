@@ -28,7 +28,7 @@
       return {
         selectedAnsId: null,
         ansStatus: "",
-        playerScore: 0,
+        incrementScoreBy: 5,
       };
     },
 
@@ -69,7 +69,7 @@
             this.ansStatus = "correct";
             this.$store.dispatch("submitScore", {
               playerId: this.playerId,
-              score: ++this.playerScore,
+              score: this.incrementScoreBy,
             });
           } else {
             this.ansStatus = "wrong";

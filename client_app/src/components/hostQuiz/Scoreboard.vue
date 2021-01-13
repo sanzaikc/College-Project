@@ -3,7 +3,7 @@
   <b-card no-body header="Scoreboard">
     <b-list-group flush>
       <b-list-group-item
-        v-for="(player, index) in players"
+        v-for="(player, index) in sortedArray"
         :key="index"
         class="d-flex justify-content-between align-items-center"
       >
@@ -40,14 +40,8 @@
       },
 
       sortedArray: function() {
-        function compare(a, b) {
-          if (a.score < b.score) return -1;
-          if (a.score > b.score) return 1;
-          return 0;
-        }
-
         // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        return this.players.sort(compare);
+        return this.players.sort((a, b) => (a.score > b.score ? -1 : 1));
       },
     },
 
