@@ -28,14 +28,14 @@
       </div>
     </div>
     <div class="col-md-4">
-      <Scoreboard :quizId="quizId" />
+      <Scoreboard :quizId="quizId" :players="players" />
     </div>
   </div>
 </template>
 
 <script>
   import Scoreboard from "@/components/hostQuiz/Scoreboard";
-  import { mapState } from "vuex";
+  import { mapGetters, mapState } from "vuex";
 
   export default {
     components: {
@@ -44,7 +44,6 @@
 
     props: {
       allQuestions: { type: Array },
-      players: { type: Array },
     },
 
     data() {
@@ -56,6 +55,8 @@
 
     computed: {
       ...mapState({ quizId: (state) => state.quiz.quizDetail.id }),
+      ...mapGetters(["players"]),
+
       currentQuestion() {
         return this.allQuestions[this.questionIndex];
       },

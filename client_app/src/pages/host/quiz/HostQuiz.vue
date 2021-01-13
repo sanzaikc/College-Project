@@ -29,14 +29,16 @@
     </div>
     <div v-if="players">
       <div class="my-4" v-show="!start">
-        <h5>Participants:</h5>
-        <h5
-          v-for="(player, index) in players"
-          :key="player.id"
-          class="text-info"
-        >
-          {{ index + 1 + "." }} {{ player.name }}
-        </h5>
+        <div>
+          <h5>Participants:</h5>
+          <h5
+            v-for="(player, index) in players"
+            :key="player.id"
+            class="text-info"
+          >
+            {{ index + 1 + "." }} {{ player.name }}
+          </h5>
+        </div>
       </div>
       <button
         v-show="!start"
@@ -47,13 +49,11 @@
         Start Quiz
       </button>
     </div>
-
     <transition name="fade" mode="out-in">
       <div class="mt-5">
         <HostView
           v-if="start"
           :allQuestions="allQuestions"
-          :players="players"
           @onGameFinish="endQuiz"
         />
       </div>
@@ -63,7 +63,7 @@
 
 <script>
   import HostView from "@/components/hostQuiz/HostView";
-  import { mapMutations, mapState, mapGetters } from "vuex";
+  import { mapMutations, mapState } from "vuex";
 
   export default {
     components: {
@@ -80,13 +80,12 @@
     computed: {
       ...mapState({
         quizDetail: (state) => state.quiz.quizDetail,
+        players: (state) => state.quiz.players,
       }),
 
       allQuestions() {
         return this.quizDetail.questions;
       },
-
-      ...mapGetters(["players"]),
     },
 
     created() {
@@ -98,13 +97,14 @@
     },
 
     methods: {
-      ...mapMutations(["QUIZ_DETAIL", "UPDATE_PLAYERS"]),
+      ...mapMutations(["QUIZ_DETAIL", "ADD_PLAYERS"]),
 
       listenForPlayerJoining() {
         window.Echo.channel("quizy" + this.$route.params.id).listen(
           "PlayerJoined",
           (e) => {
-            this.UPDATE_PLAYERS(e.player);
+            e.player.score = 0;
+            this.ADD_PLAYERS(e.player);
             this.$toasted.show(e.player.name + " joined!");
           }
         );

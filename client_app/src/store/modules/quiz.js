@@ -4,6 +4,7 @@ const state = {
   quizList: [],
   quizDetail: {},
   quizQuestions: [],
+  players: [],
 };
 
 const mutations = {
@@ -44,8 +45,20 @@ const mutations = {
       q.id == data.id ? { ...q, pin: data.pin } : q
     );
   },
-  UPDATE_PLAYERS: (state, data) => {
-    state.quizDetail.players.push(data);
+  ADD_PLAYERS: (state, player) => {
+    let playerIds = state.players.map((p) => p.id);
+    if (!playerIds.includes(player.id)) {
+      state.players.push(player);
+    }
+  },
+  REMOVE_PLAYERS: (state) => {
+    state.players = [];
+  },
+
+  UPDATE_SCORE: (state, { player_id, score }) => {
+    state.players = state.players.map((p) =>
+      p.id === player_id ? { ...p, score } : p
+    );
   },
 };
 
@@ -198,12 +211,15 @@ const actions = {
     });
   },
 
-  endQuiz: (context, quizId) => {
+  endQuiz: ({ commit }, quizId) => {
     return new Promise((resolve, reject) => {
       $axios
         .post("quizzes/end/" + quizId)
         .then((res) => {
-          if (res.status == 200) resolve(res.data);
+          if (res.status == 200) {
+            commit("REMOVE_PLAYERS");
+            resolve(res.data);
+          }
         })
         .catch((error) => reject(error.response.data));
     });
@@ -224,9 +240,7 @@ const actions = {
   },
 };
 
-const getters = {
-  players: (state) => state.quizDetail.players,
-};
+const getters = {};
 
 export default {
   state,
