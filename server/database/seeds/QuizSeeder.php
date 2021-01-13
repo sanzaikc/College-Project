@@ -12,6 +12,10 @@ class QuizSeeder extends Seeder {
   public function run() {
     $quizzes = [
       [
+        'name' => 'Fun Quiz',
+        'description' => 'This quiz contains test questions.',
+      ],
+      [
         'name' => 'About Nepal',
         'description' => 'This quiz contains questions about Nepal.',
       ],

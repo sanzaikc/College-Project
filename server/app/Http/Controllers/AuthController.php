@@ -34,7 +34,12 @@ class AuthController extends Controller {
 
     $token = auth()->user()->createToken('auth-token')->plainTextToken;
 
-    return response(['user' => auth()->user(), 'token' => $token]);
+    $counts = [
+      'question_count' => auth()->user()->questions->count(),
+      'quiz_count' => auth()->user()->quizzes->count(),
+    ];
+
+    return response(['user' => auth()->user(), 'token' => $token, 'counts' => $counts]);
   }
 
   public function logout() {
