@@ -81,6 +81,12 @@
                 </div>
             </div>
             <div v-if="filterByCategory.length > 0">
+                <!-- Select all checkbox -->
+                <div class="p-2 d-flex justify-content-between align-items-center">
+                    <h4>Questions</h4>
+                    <input type="checkbox" title="Select all" @change="selectAll" />
+                </div>
+
                 <transition-group name="slide-fade" mode="out-in">
                     <div 
                         v-for="(question, index) in filterByCategory" 
@@ -210,6 +216,14 @@ export default {
                         theme: "bubble",
                     })
                 })
+        },
+        // select all at once
+        selectAll() {
+            if(this.filterByCategory.length > 0 && this.attachment < this.filterByCategory.length) {
+                this.attachment = this.filterByCategory.map(question => question.id);
+            } else {
+                this.attachment = [];
+            }
         },
         detach(id){
             if(confirm("Are you sure you want to deattach this question from this quiz ?")){
