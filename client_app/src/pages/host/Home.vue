@@ -6,13 +6,13 @@
             <div class="my-3 d-flex justify-content-around">
                 <div class="col-md-6">
                 <div class="d-flex justify-content-center align-items-center">
-                    <animated-counter :num="10"></animated-counter>
+                    <animated-counter :num="counts.quizCount"></animated-counter>
                     <h3 class="ml-3 text-secondary">Quizes</h3>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="d-flex justify-content-center align-items-center">
-                    <animated-counter :num="20"></animated-counter>
+                    <animated-counter :num="counts.questionCount"></animated-counter>
                     <h3 class="ml-3 text-secondary">Questions</h3>
                 </div>
             </div>
@@ -32,7 +32,8 @@ export default {
     computed: {
         ...mapState({
             'disabled': state => state.auth.currentUser.is_disabled,
-            'userName': state => state.auth.currentUser.name
+            'userName': state => state.auth.currentUser.name,
+            'counts': state => state.auth.counts
         }),
     },
     components: {

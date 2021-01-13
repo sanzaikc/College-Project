@@ -1,9 +1,10 @@
 import $axios from "../../plugins/axios";
-import Cookies from 'js-cookie'
+import Cookies from "js-cookie";
 
 const state = {
-    token: null,
-    currentUser:  null,
+	token: null,
+	currentUser: null,
+	counts: null,
 };
 const mutations = {
 	RETRIEVE_TOKEN: (state, token) => {
@@ -12,15 +13,23 @@ const mutations = {
 	},
 	DESTROY_TOKEN: (state) => {
 		state.token = null;
-		Cookies.remove("accessToken")
+		Cookies.remove("accessToken");
 	},
 	SET_CURRENT_USER: (state, user) => {
 		state.currentUser = user;
-		Cookies.set("currentUser", user, { expires: 7 })
+		Cookies.set("currentUser", user, { expires: 7 });
 	},
 	REMOVE_USER: (state) => {
 		state.currentUser = null;
 		Cookies.remove("currentUser");
+	},
+
+	// setting state for count of quiz and question
+	SET_COUNTS: (state, counts) => {
+		state.counts = {
+			questionCount: counts.question_count,
+			quizCount: counts.quiz_count,
+		};
 	},
 };
 const actions = {
@@ -33,6 +42,10 @@ const actions = {
 					.then((res) => {
 						let user = res.data.user;
 						context.commit("SET_CURRENT_USER", user);
+
+						// set counts of quiz and question
+						let counts = res.data.counts;
+						context.commit("SET_COUNTS", counts);
 
 						resolve(res);
 					})
@@ -55,6 +68,10 @@ const actions = {
 					let user = res.data.user;
 					commit("SET_CURRENT_USER", user);
 
+					// set counts of quiz and question
+					let counts = res.data.counts;
+					commit("SET_COUNTS", counts);
+
 					resolve(res);
 				})
 				.catch((error) => {
@@ -62,7 +79,7 @@ const actions = {
 				});
 		});
 	},
-	register: (context,credentials) => {
+	register: (context, credentials) => {
 		return new Promise((resolve, reject) => {
 			$axios
 				.post("/register", credentials)
@@ -94,17 +111,17 @@ const actions = {
 	},
 };
 const getters = {
-	token: state => state.token,
+	token: (state) => state.token,
 
 	loggedIn: (state) => {
 		return state.token != null;
 	},
-	isAdmin: state => {
+	isAdmin: (state) => {
 		return state.currentUser.is_admin;
 	},
-	isDisabled: state => {
+	isDisabled: (state) => {
 		return state.currentUser && state.currentUser.is_disabled;
-	}
+	},
 };
 
 export default {

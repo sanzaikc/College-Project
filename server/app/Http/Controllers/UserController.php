@@ -30,7 +30,11 @@ class UserController extends Controller {
       $categories = auth()->user()->categories;
       return response(['user' => $user, 'categories' => $categories]);
     }
-    return response(['user' => $user]);
+    $counts = [
+      'question_count' => auth()->user()->questions->count(),
+      'quiz_count' => auth()->user()->quizzes->count(),
+    ];
+    return response(['user' => $user, 'counts' => $counts]);
   }
 
   /**
