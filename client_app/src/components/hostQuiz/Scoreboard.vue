@@ -1,6 +1,6 @@
 /* eslint-disable vue/no-side-effects-in-computed-properties */
 <template>
-  <b-card no-body header="Scoreboard">
+  <b-card no-body header="Scoreboard" class="w-100">
     <b-list-group flush>
       <b-list-group-item
         v-for="(player, index) in sortedArray"
