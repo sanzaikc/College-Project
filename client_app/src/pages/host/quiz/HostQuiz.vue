@@ -27,37 +27,29 @@
         </div>
       </div>
     </div>
-    <div v-if="players">
-      <div class="my-4" v-show="!start">
-        <div>
-          <h5>Participants:</h5>
-          <h5
-            v-for="(player, index) in players"
-            :key="player.id"
-            class="text-info"
-          >
-            {{ index + 1 + "." }} {{ player.name }}
-          </h5>
+      <div class="row mt-3">
+        <div class="col-lg-2">
+          <h5>Participants</h5>
+          <div v-if="players.length > 0">
+            <h5
+              v-for="(player, index) in players"
+              :key="player.id"
+              class="text-info"
+            >
+              {{ index + 1 + "." }} {{ player.name }}
+            </h5>
+          </div>
+          <div v-else>
+            <p>Waiting for players!</p>
+          </div>
+        </div>
+        <div class="col-lg-10">
+          <HostView
+            :allQuestions="allQuestions"
+            @onGameFinish="endQuiz"
+          />
         </div>
       </div>
-      <button
-        v-show="!start"
-        class="btn btn-outline-primary btn-block w-25"
-        style="position: fixed; bottom: 5%; left: 45%"
-        @click="startGame"
-      >
-        Start Quiz
-      </button>
-    </div>
-    <transition name="fade" mode="out-in">
-      <div class="mt-5">
-        <HostView
-          v-if="start"
-          :allQuestions="allQuestions"
-          @onGameFinish="endQuiz"
-        />
-      </div>
-    </transition>
   </div>
 </template>
 
@@ -67,13 +59,14 @@
 
   export default {
     components: {
-      HostView,
+      HostView
     },
 
     data() {
       return {
         copied: false,
         start: false,
+        selectedQuestion: null,
       };
     },
 

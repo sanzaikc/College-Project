@@ -16,7 +16,7 @@ class QuizController extends Controller {
    * @return \Illuminate\Http\Response
    */
   public function index() {
-    return response(['quizzes' => Quiz::with(['questions', 'questions.answer', 'questions.options', 'players', 'players.score'])->where('user_id', auth()->id())->get()]);
+    return response(['quizzes' => Quiz::with(['questions', 'questions.category', 'questions.answer', 'questions.options', 'players', 'players.score'])->where('user_id', auth()->id())->get()]);
   }
 
   /**

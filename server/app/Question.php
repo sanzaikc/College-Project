@@ -34,4 +34,8 @@ class Question extends Model {
   public function answer() {
     return $this->hasOne(Answer::class);
   }
+
+  public function category() {
+    return $this->belongsTo(Category::class);
+  }
 }
