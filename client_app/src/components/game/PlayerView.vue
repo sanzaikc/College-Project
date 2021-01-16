@@ -14,7 +14,14 @@
         {{ body }}
       </h3>
     </div>
-    <b-button v-if="turnId === playerId" variant="primary" class="float-right" :disabled="disabled" @click="submit">Confirm</b-button>
+    <b-button
+      v-if="turnId === playerId"
+      variant="primary"
+      class="float-right"
+      :disabled="disabled"
+      @click="submit"
+      >Confirm</b-button
+    >
   </div>
 </template>
 
@@ -23,7 +30,7 @@
     props: {
       playerId: { type: Number },
       currentQuestion: { type: Object },
-      turnId: {type: Number}
+      turnId: { type: Number },
     },
 
     data() {
@@ -71,16 +78,22 @@
 
       submit() {
         this.disabled = true;
-        if (this.correctAns) {
-          this.ansStatus = "correct";
-          this.$store.dispatch("submitScore", {
-            playerId: this.playerId,
-            score: this.incrementScoreBy,
-          });
-        } else {
-          this.ansStatus = "wrong";
-        }
-      }
+        var correct = new Audio(require("@/assets/sounds/correct.mp3"));
+        var wrong = new Audio(require("@/assets/sounds/wrong.mp3"));
+        setTimeout(() => {
+          if (this.correctAns) {
+            correct.play();
+            this.ansStatus = "correct";
+            this.$store.dispatch("submitScore", {
+              playerId: this.playerId,
+              score: this.incrementScoreBy,
+            });
+          } else {
+            wrong.play();
+            this.ansStatus = "wrong";
+          }
+        }, 1000);
+      },
     },
   };
 </script>
