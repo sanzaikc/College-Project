@@ -15,13 +15,14 @@
       </h3>
     </div>
     <b-button
-      v-if="turnId === playerId"
+      v-if="turnId === playerId && !disabled"
       variant="primary"
       class="float-right"
       :disabled="disabled"
       @click="submit"
-      >Confirm</b-button
     >
+      Confirm
+    </b-button>
   </div>
 </template>
 
@@ -40,6 +41,17 @@
         incrementScoreBy: 5,
         disabled: true,
       };
+    },
+
+    watch: {
+      currentQuestion: {
+        immediate: true,
+        handler: function(newValue) {
+          if (newValue) {
+            this.disabled = false;
+          }
+        },
+      },
     },
 
     computed: {
@@ -73,7 +85,6 @@
       selectedAnswer(id) {
         this.selectedAnsId = id;
         this.ansStatus = "selected";
-        this.disabled = false;
       },
 
       submit() {
