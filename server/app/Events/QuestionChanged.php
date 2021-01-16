@@ -11,15 +11,15 @@ use Illuminate\Queue\SerializesModels;
 class QuestionChanged implements ShouldBroadcast {
   use Dispatchable, InteractsWithSockets, SerializesModels;
   public $question;
-  public $quiz_id;
+  public $quiz;
   /**
    * Create a new event instance.
    *
    * @return void
    */
-  public function __construct($question, $quiz_id) {
+  public function __construct($question, $quiz) {
     $this->question = $question;
-    $this->quiz_id = $quiz_id;
+    $this->quiz = $quiz;
   }
 
   /**
@@ -28,6 +28,6 @@ class QuestionChanged implements ShouldBroadcast {
    * @return \Illuminate\Broadcasting\Channel|array
    */
   public function broadcastOn() {
-    return new Channel('Quizy' . $this->quiz_id);
+    return new Channel('Quizy' . $this->quiz->id);
   }
 }

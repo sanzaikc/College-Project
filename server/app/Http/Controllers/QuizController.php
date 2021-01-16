@@ -66,7 +66,7 @@ class QuizController extends Controller {
 
     if ($request->current_question) {
       $currentQuestion = Question::with('options', 'answer')->whereId($request->current_question)->first();
-      event(new QuestionChanged($currentQuestion, $quiz->id));
+      event(new QuestionChanged($currentQuestion, $quiz));
     }
 
     return response(['quiz' => $quiz->fresh()]);
