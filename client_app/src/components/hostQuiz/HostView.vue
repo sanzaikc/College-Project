@@ -46,14 +46,18 @@
           <h6>{{ categoryQuestion[0].category.name }}</h6>
           <b-list-group>
             <b-list-group-item
+              button
+              :disabled="selectedQuestions.includes(question.id)"
               :active="
                 selectedQuestion && selectedQuestion.id === question.id
                   ? true
                   : false
               "
               class="py-2"
+              :class="{'bg-secondary text-white' : selectedQuestions.includes(question.id)}"
               v-for="question in categoryQuestion"
               :key="question.id"
+              @click="!selectedQuestions.includes(question.id) && setQuestion(question)"
             >
               <div v-text="question.body" />
             </b-list-group-item>
@@ -87,23 +91,24 @@
           {{ option.body }}
         </b-badge>
       </div>
-      <b-button class="p-0" block variant="link" @click="chooseRandomQuestion"
+      <!-- <b-button class="p-0" block variant="link" @click="chooseRandomQuestion"
         >Choose random question</b-button
       >
       <b-button class="p-0" block id="popover-target-1" variant="link">
         Choose random question from a category
-      </b-button>
-      <b-popover target="popover-target-1" triggers="hover" placement="bottom">
+      </b-button> -->
+      <!-- <b-popover target="popover-target-1" triggers="hover" placement="bottom">
         <template #title>Available Categories</template>
         <p>General</p>
         <p>Science</p>
         <p>Sports</p>
-      </b-popover>
+      </b-popover> -->
       <b-button
         block
         class="my-3"
         variant="primary"
-        @click="changeCurrentQuestion"
+        @click="next"
+        :disabled="!selectedQuestion"
         >Show question
       </b-button>
     </div>
@@ -122,10 +127,15 @@
     data() {
       return {
         turnIndex: 0,
-        questionIndex: 0,
+        questionIndex: -1,
         quizStarted: this.start,
         selectedQuestion: null,
+        selectedQuestions: [],
       };
+    },
+
+    mounted() {
+      this.selectedQuestion = this.allQuestions[0];
     },
 
     computed: {
@@ -156,19 +166,26 @@
       },
     },
 
-    mounted() {
-      this.startQuiz();
-    },
+    // mounted() {
+    //   this.startQuiz();
+    // },
 
     methods: {
       startQuiz() {
         this.$emit("onGameStart");
-        this.changeCurrentQuestion(this.allQuestions[this.questionIndex].id);
+        // this.changeCurrentQuestion(this.allQuestions[this.questionIndex].id);
+      },
+
+      setQuestion(question) {
+        this.selectedQuestion = question;
       },
 
       next() {
-        this.questionIndex++;
-        this.changeCurrentQuestion(this.allQuestions[this.questionIndex].id);
+        this.selectedQuestions.push(this.selectedQuestion.id);
+        if(this.questionIndex < 0) this.startQuiz();
+        ++this.questionIndex;
+        // this.changeCurrentQuestion(this.allQuestions[this.questionIndex].id);
+        this.changeCurrentQuestion(this.selectedQuestion.id);
       },
 
       chooseRandomQuestion() {
