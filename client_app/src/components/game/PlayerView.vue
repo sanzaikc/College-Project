@@ -6,7 +6,7 @@
       <h3
         v-for="{ id, body } in shuffledOptions"
         :key="id"
-        @click="selectedAnswer(id)"
+        @click="turnId === playerId && selectedAnswer(id)"
         role="button"
         class="col-5 my-3 py-3 border rounded-pill shadow-sm text-center"
         :class="selectedAnsId === id ? ansStatus : ''"
@@ -14,6 +14,7 @@
         {{ body }}
       </h3>
     </div>
+    <b-button v-if="turnId === playerId" variant="primary" class="float-right" :disabled="disabled" @click="submit">Confirm</b-button>
   </div>
 </template>
 
@@ -22,6 +23,7 @@
     props: {
       playerId: { type: Number },
       currentQuestion: { type: Object },
+      turnId: {type: Number}
     },
 
     data() {
@@ -29,6 +31,7 @@
         selectedAnsId: null,
         ansStatus: "",
         incrementScoreBy: 5,
+        disabled: true,
       };
     },
 
@@ -63,19 +66,21 @@
       selectedAnswer(id) {
         this.selectedAnsId = id;
         this.ansStatus = "selected";
-
-        setTimeout(() => {
-          if (this.correctAns) {
-            this.ansStatus = "correct";
-            this.$store.dispatch("submitScore", {
-              playerId: this.playerId,
-              score: this.incrementScoreBy,
-            });
-          } else {
-            this.ansStatus = "wrong";
-          }
-        }, 500);
+        this.disabled = false;
       },
+
+      submit() {
+        this.disabled = true;
+        if (this.correctAns) {
+          this.ansStatus = "correct";
+          this.$store.dispatch("submitScore", {
+            playerId: this.playerId,
+            score: this.incrementScoreBy,
+          });
+        } else {
+          this.ansStatus = "wrong";
+        }
+      }
     },
   };
 </script>

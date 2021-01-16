@@ -7,7 +7,7 @@
     </div>
     <div class="row mt-5 justify-content-center" v-else>
       <div class="col-lg-8" v-if="quizHasStarted">
-        <PlayerView :currentQuestion="currentQuestion" :playerId="player.id" />
+        <PlayerView :currentQuestion="currentQuestion" :playerId="player.id" :turnId="turnId" />
       </div>
       <div v-else>
         <h2>Hi, {{ player.name }}</h2>
@@ -50,6 +50,7 @@
         currentQuestion: "",
         players: [],
         quizHasEnded: false,
+        turnId: null,
       };
     },
 
@@ -76,6 +77,7 @@
         window.Echo.channel("Quizy" + this.player.quiz_id).listen(
           "QuestionChanged",
           (e) => {
+            this.turnId = e.quiz.player_id;
             this.currentQuestion = e.question;
             this.quizHasStarted = true;
           }

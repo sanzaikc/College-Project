@@ -12,6 +12,7 @@ class QuestionChanged implements ShouldBroadcast {
   use Dispatchable, InteractsWithSockets, SerializesModels;
   public $question;
   public $quiz;
+  public $quiz_id;
   /**
    * Create a new event instance.
    *
@@ -20,6 +21,7 @@ class QuestionChanged implements ShouldBroadcast {
   public function __construct($question, $quiz) {
     $this->question = $question;
     $this->quiz = $quiz;
+    $this->quiz_id = $quiz->id;
   }
 
   /**

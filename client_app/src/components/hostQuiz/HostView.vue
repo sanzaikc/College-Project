@@ -111,7 +111,8 @@
 </template>
 
 <script>
-  import { mapGetters, mapState } from "vuex";
+  import { mapState } from "vuex";
+  // import { mapGetters, mapState } from "vuex";
 
   export default {
     props: {
@@ -120,6 +121,7 @@
 
     data() {
       return {
+        turnIndex: 0,
         questionIndex: 0,
         quizStarted: this.start,
         selectedQuestion: null,
@@ -127,8 +129,8 @@
     },
 
     computed: {
-      ...mapState({ quizId: (state) => state.quiz.quizDetail.id }),
-      ...mapGetters(["players"]),
+      ...mapState({ quizId: (state) => state.quiz.quizDetail.id, players: state => state.quiz.players }),
+      // ...mapGetters(["players"]),
 
       currentQuestion() {
         return this.allQuestions[this.questionIndex];
@@ -195,7 +197,9 @@
           let { status } = await this.$store.dispatch("changeCurrentQuestion", {
             quizId: this.quizId,
             questionId: this.selectedQuestion.id,
+            playerId: this.players[this.turnIndex].id,
           });
+          this.turnIndex = (this.turnIndex + 1) % this.players.length;
           if (status === 200) {
             console.log("Success");
           }

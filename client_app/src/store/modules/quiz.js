@@ -201,11 +201,12 @@ const actions = {
 		});
 	},
 
-	changeCurrentQuestion: (context, { quizId, questionId }) => {
+	changeCurrentQuestion: (context, { quizId, questionId, playerId }) => {
 		return new Promise((resolve, reject) => {
 			$axios
 				.post("quizzes/" + quizId, {
 					current_question: questionId,
+					player_id: playerId,
 				})
 				.then((res) => {
 					if (res.status === 200) resolve(res.data);
