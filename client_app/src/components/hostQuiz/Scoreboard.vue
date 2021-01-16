@@ -9,7 +9,7 @@
         >
           <p class="m-0">
             <b-badge
-              v-if="index < 3"
+              v-if="index < 3 && player.score > 0"
               :variant="playerRank(index).color"
               class="py-1 mr-2"
               pill
