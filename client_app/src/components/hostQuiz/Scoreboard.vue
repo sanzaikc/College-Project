@@ -1,22 +1,28 @@
-/* eslint-disable vue/no-side-effects-in-computed-properties */
 <template>
-  <b-card no-body header="Scoreboard" class="w-100">
-    <b-list-group flush>
-      <b-list-group-item
-        v-for="(player, index) in sortedArray"
-        :key="index"
-        class="d-flex justify-content-between align-items-center"
-      >
-        <p class="m-0">
-          <b-badge v-if="showRanking" variant="success" class="py-1 mr-2" pill>
-            1st
-          </b-badge>
-          {{ player.name }}
-        </p>
-        {{ player.score }}
-      </b-list-group-item>
-    </b-list-group>
-  </b-card>
+  <div>
+    <b-card no-body header="Scoreboard" class="w-100">
+      <transition-group tag="b-list-group" name="flip-list" flush>
+        <b-list-group-item
+          v-for="(player, index) in sortedArray"
+          :key="player.id"
+          class="d-flex justify-content-between align-items-center"
+        >
+          <p class="m-0">
+            <b-badge
+              v-if="index < 3"
+              :variant="playerRank(index).color"
+              class="py-1 mr-2"
+              pill
+            >
+              {{ playerRank(index).rank }}
+            </b-badge>
+            {{ player.name }}
+          </p>
+          <b>{{ player.score }}</b>
+        </b-list-group-item>
+      </transition-group>
+    </b-card>
+  </div>
 </template>
 
 <script>
@@ -61,8 +67,34 @@
           }
         );
       },
+
+      playerRank(index) {
+        let ranks = [
+          {
+            index: 0,
+            rank: "1st",
+            color: "success",
+          },
+          {
+            index: 1,
+            rank: "2nd",
+            color: "info",
+          },
+          {
+            index: 2,
+            rank: "3rd",
+            color: "warning",
+          },
+        ];
+
+        return ranks[index];
+      },
     },
   };
 </script>
 
-<style></style>
+<style>
+  .flip-list-move {
+    transition: transform 1s;
+  }
+</style>

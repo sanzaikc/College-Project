@@ -32,13 +32,29 @@
     </div>
   </div> -->
   <div class="row">
-    <div class="col-lg-8" style="max-height: calc(100vh - 180px); overflow-y: auto;">
+    <div
+      class="col-lg-8"
+      style="max-height: calc(100vh - 180px); overflow-y: auto;"
+    >
       <h5>Questions</h5>
       <div class="row">
-        <div class="col-6 mb-3" v-for="(categoryQuestion, key) in categoryWishQuestions" :key="key">
-          <h6>{{categoryQuestion[0].category.name}}</h6>
+        <div
+          class="col-6 mb-3"
+          v-for="(categoryQuestion, key) in categoryWiseQuestions"
+          :key="key"
+        >
+          <h6>{{ categoryQuestion[0].category.name }}</h6>
           <b-list-group>
-            <b-list-group-item :active="(selectedQuestion && selectedQuestion.id === question.id) ? true : false" class="py-2" v-for="question in categoryQuestion" :key="question.id">
+            <b-list-group-item
+              :active="
+                selectedQuestion && selectedQuestion.id === question.id
+                  ? true
+                  : false
+              "
+              class="py-2"
+              v-for="question in categoryQuestion"
+              :key="question.id"
+            >
               <div v-text="question.body" />
             </b-list-group-item>
           </b-list-group>
@@ -47,17 +63,33 @@
     </div>
     <div class="col-lg-4">
       <h5>Settings</h5>
-        <b-button-group class="my-3 w-100">
+      <b-button-group class="my-3 w-100">
         <b-button variant="danger" @click="endQuiz">End quiz</b-button>
-        <a class="btn btn-primary" href="http://localhost:8080/audience-screen" target="blank">Open audience screen</a>
+        <a
+          class="btn btn-primary"
+          href="http://localhost:8080/audience-screen"
+          target="blank"
+          >Open audience screen</a
+        >
       </b-button-group>
       <div class="my-5" v-if="selectedQuestion">
         <div v-text="selectedQuestion.body" />
-        <b-badge pill v-for="option in selectedQuestion.options" :key="option.id" :variant="option.id === selectedQuestion.answer.option_id ? 'success' : 'light'">
-          {{option.body}}
+        <b-badge
+          pill
+          v-for="option in selectedQuestion.options"
+          :key="option.id"
+          :variant="
+            option.id === selectedQuestion.answer.option_id
+              ? 'success'
+              : 'light'
+          "
+        >
+          {{ option.body }}
         </b-badge>
       </div>
-      <b-button class="p-0" block variant="link" @click="chooseRandomQuestion">Choose random question</b-button>
+      <b-button class="p-0" block variant="link" @click="chooseRandomQuestion"
+        >Choose random question</b-button
+      >
       <b-button class="p-0" block id="popover-target-1" variant="link">
         Choose random question from a category
       </b-button>
@@ -67,20 +99,21 @@
         <p>Science</p>
         <p>Sports</p>
       </b-popover>
-      <b-button block class="my-3" variant="primary" @click="changeCurrentQuestion">Show question</b-button>
+      <b-button
+        block
+        class="my-3"
+        variant="primary"
+        @click="changeCurrentQuestion"
+        >Show question
+      </b-button>
     </div>
   </div>
 </template>
 
 <script>
-  // import Scoreboard from "@/components/hostQuiz/Scoreboard";
   import { mapGetters, mapState } from "vuex";
 
   export default {
-    components: {
-      // Scoreboard,
-    },
-
     props: {
       allQuestions: { type: Array },
     },
@@ -105,17 +138,20 @@
         return this.questionIndex == this.allQuestions.length - 1;
       },
 
-      categoryWishQuestions() {
+      categoryWiseQuestions() {
         let questions = {};
-        this.allQuestions.forEach(question => {
-          if(questions[question.category_id]) {
-            questions[question.category_id] = [...questions[question.category_id], question];
+        this.allQuestions.forEach((question) => {
+          if (questions[question.category_id]) {
+            questions[question.category_id] = [
+              ...questions[question.category_id],
+              question,
+            ];
           } else {
             questions[question.category_id] = [question];
           }
         });
         return questions;
-      }
+      },
     },
 
     mounted() {
@@ -124,15 +160,19 @@
 
     methods: {
       startQuiz() {
+        this.$emit("onGameStart");
         this.changeCurrentQuestion(this.allQuestions[this.questionIndex].id);
       },
+
       next() {
         this.questionIndex++;
         this.changeCurrentQuestion(this.allQuestions[this.questionIndex].id);
       },
 
       chooseRandomQuestion() {
-        this.selectedQuestion = this.allQuestions[Math.floor(Math.random() * this.allQuestions.length)];
+        this.selectedQuestion = this.allQuestions[
+          Math.floor(Math.random() * this.allQuestions.length)
+        ];
         console.log(this.selectedQuestion);
       },
 
@@ -149,6 +189,7 @@
       //     console.log(error);
       //   }
       // },
+
       async changeCurrentQuestion() {
         try {
           let { status } = await this.$store.dispatch("changeCurrentQuestion", {

@@ -27,8 +27,10 @@
         </div>
       </div>
     </div>
-      <div class="row mt-3">
-        <div class="col-lg-2">
+    <div class="row mt-3">
+      <div class="col-lg-3">
+        <Scoreboard v-if="gameStarted" :quizId="quizDetail.id" />
+        <div v-else>
           <h5>Participants</h5>
           <div v-if="players.length > 0">
             <h5
@@ -43,30 +45,36 @@
             <p>Waiting for players!</p>
           </div>
         </div>
-        <div class="col-lg-10">
-          <HostView
-            :allQuestions="allQuestions"
-            @onGameFinish="endQuiz"
-          />
-        </div>
       </div>
+      <div class="col-lg-9">
+        <HostView
+          :allQuestions="allQuestions"
+          @onGameStart="gameStarted = true"
+          @onGameFinish="endQuiz"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
   import HostView from "@/components/hostQuiz/HostView";
+  import Scoreboard from "@/components/hostQuiz/Scoreboard";
+
   import { mapMutations, mapState } from "vuex";
 
   export default {
     components: {
-      HostView
+      HostView,
+      Scoreboard,
     },
 
     data() {
       return {
         copied: false,
-        start: false,
-        selectedQuestion: null,
+        gameStarted: false,
+        // start: false,
+        // selectedQuestion: null,
       };
     },
 
@@ -130,13 +138,13 @@
         window.getSelection().removeAllRanges();
       },
 
-      startGame() {
-        if (this.players.length > 0) {
-          this.start = true;
-        } else {
-          alert("Not enough participants");
-        }
-      },
+      // startGame() {
+      //   if (this.players.length > 0) {
+      //     this.start = true;
+      //   } else {
+      //     alert("Not enough participants");
+      //   }
+      // },
 
       async endQuiz() {
         if (confirm("End this Quiz? ")) {
