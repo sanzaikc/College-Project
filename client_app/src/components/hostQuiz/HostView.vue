@@ -39,11 +39,11 @@
       <h5>Questions</h5>
       <div class="row">
         <div
-          class="col-6 mb-3"
+          class="col-12 mb-3"
           v-for="(categoryQuestion, key) in categoryWiseQuestions"
           :key="key"
         >
-          <h6>{{ categoryQuestion[0].category.name }}</h6>
+          <!-- <h6>{{ categoryQuestion[0].category.name }}</h6> -->
           <b-list-group>
             <b-list-group-item
               button
@@ -54,10 +54,17 @@
                   : false
               "
               class="py-2"
-              :class="{'bg-secondary text-white' : selectedQuestions.includes(question.id)}"
+              :class="{
+                'bg-secondary text-white': selectedQuestions.includes(
+                  question.id
+                ),
+              }"
               v-for="question in categoryQuestion"
               :key="question.id"
-              @click="!selectedQuestions.includes(question.id) && setQuestion(question)"
+              @click="
+                !selectedQuestions.includes(question.id) &&
+                  setQuestion(question)
+              "
             >
               <div v-text="question.body" />
             </b-list-group-item>
@@ -67,7 +74,7 @@
     </div>
     <div class="col-lg-4">
       <h5>Settings</h5>
-      <b-button-group class="my-3 w-100">
+      <b-button-group class="my-2 w-100">
         <b-button variant="danger" @click="endQuiz">End quiz</b-button>
         <a
           class="btn btn-primary"
@@ -77,6 +84,8 @@
         >
       </b-button-group>
       <div class="my-5" v-if="selectedQuestion">
+        <div class="mb-1">Selected Question</div>
+
         <div v-text="selectedQuestion.body" />
         <b-badge
           pill
@@ -139,7 +148,10 @@
     },
 
     computed: {
-      ...mapState({ quizId: (state) => state.quiz.quizDetail.id, players: state => state.quiz.players }),
+      ...mapState({
+        quizId: (state) => state.quiz.quizDetail.id,
+        players: (state) => state.quiz.players,
+      }),
       // ...mapGetters(["players"]),
 
       currentQuestion() {
@@ -182,7 +194,7 @@
 
       next() {
         this.selectedQuestions.push(this.selectedQuestion.id);
-        if(this.questionIndex < 0) this.startQuiz();
+        if (this.questionIndex < 0) this.startQuiz();
         ++this.questionIndex;
         // this.changeCurrentQuestion(this.allQuestions[this.questionIndex].id);
         this.changeCurrentQuestion(this.selectedQuestion.id);
@@ -194,20 +206,6 @@
         ];
         console.log(this.selectedQuestion);
       },
-
-      // async changeCurrentQuestion(id) {
-      //   try {
-      //     let { status } = await this.$store.dispatch("changeCurrentQuestion", {
-      //       quizId: this.quizId,
-      //       questionId: id,
-      //     });
-      //     if (status === 200) {
-      //       console.log("Success");
-      //     }
-      //   } catch (error) {
-      //     console.log(error);
-      //   }
-      // },
 
       async changeCurrentQuestion() {
         try {
