@@ -89,6 +89,9 @@
                   player,
                 } = res;
 
+                this.$store.commit("ADD_PLAYERS", player);
+                this.$store.commit("SET_CURRENT_PLAYER", playerId);
+
                 this.$router.push({
                   name: "play",
                   params: { quizId, playerId, player },
