@@ -6,7 +6,7 @@
       <h3
         v-for="{ id, body } in shuffledOptions"
         :key="id"
-        @click="turnId === playerId && selectedAnswer(id)"
+        @click="turnId === playerId && !disabled  && selectedAnswer(id)"
         role="button"
         class="col-5 my-3 py-3 border rounded-pill shadow-sm text-center"
         :class="selectedAnsId === id ? ansStatus : ''"
