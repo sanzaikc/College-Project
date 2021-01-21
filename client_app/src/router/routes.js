@@ -152,4 +152,12 @@ export const routes = [
     props: true,
     component: () => import(/* webpackChunkName: "game" */ "../pages/Game.vue"),
   },
+  {
+    path: "/quiz/:quizId/audience",
+    name: "audience",
+
+    props: true,
+    component: () =>
+      import(/* webpackChunkName: "audience" */ "../pages/Audience.vue"),
+  },
 ];

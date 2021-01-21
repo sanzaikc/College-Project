@@ -1,36 +1,4 @@
 <template>
-  <!-- <div class="row">
-    <div class="p-4 border rounded col-md-8">
-      <h2>{{ currentQuestion.body }}</h2>
-      <hr />
-      <h4
-        v-for="(option, index) in currentQuestion.options"
-        :key="index"
-        class="text-secondary bg-light rounded-pill px-3 py-2 w-50"
-      >
-        {{ index + 1 + "." }} {{ option.body }}
-      </h4>
-      <div class="float-right w-25">
-        <button
-          v-if="!isLastQuestion"
-          @click="next"
-          class="btn btn-outline-primary btn-block"
-        >
-          Next Question
-        </button>
-        <button
-          v-else
-          @click="endQuiz"
-          class="btn btn-outline-danger btn-block"
-        >
-          End Quiz
-        </button>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <Scoreboard :quizId="quizId" :players="players" />
-    </div>
-  </div> -->
   <div class="row">
     <div
       class="col-lg-8"
@@ -43,7 +11,6 @@
           v-for="(categoryQuestion, key) in categoryWiseQuestions"
           :key="key"
         >
-          <!-- <h6>{{ categoryQuestion[0].category.name }}</h6> -->
           <b-list-group>
             <b-list-group-item
               button
@@ -76,12 +43,9 @@
       <h5>Settings</h5>
       <b-button-group class="my-2 w-100">
         <b-button variant="danger" @click="endQuiz">End quiz</b-button>
-        <a
-          class="btn btn-primary"
-          href="http://localhost:8080/audience-screen"
-          target="blank"
-          >Open audience screen</a
-        >
+        <a class="btn btn-primary" target="blank" @click="audienceScreen">
+          Open audience screen
+        </a>
       </b-button-group>
       <div class="my-5" v-if="selectedQuestion">
         <div class="mb-1">Selected Question</div>
@@ -225,6 +189,14 @@
 
       endQuiz() {
         this.$emit("onGameFinish");
+      },
+
+      audienceScreen() {
+        let routeData = this.$router.resolve({
+          name: "audience",
+          params: { quizId: this.quizId },
+        });
+        window.open(routeData.href, "_blank");
       },
     },
   };

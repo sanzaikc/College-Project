@@ -60,7 +60,7 @@
       ...mapGetters(["loggedIn", "isAdmin"]),
 
       isGame() {
-        return this.$route.name == "play";
+        return this.$route.name == "play" || this.$route.name == "audience";
       },
     },
   };
