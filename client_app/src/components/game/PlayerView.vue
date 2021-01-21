@@ -1,31 +1,39 @@
 <template>
   <div>
-    <h1 class="text-center">Q: {{ this.currentQuestion.body }}</h1>
-    <hr />
-    <div class="row d-flex justify-content-around">
-      <h3
-        v-for="{ id, body } in shuffledOptions"
-        :key="id"
-        @click="turnId === playerId && !disabled  && selectedAnswer(id)"
-        role="button"
-        class="col-5 my-3 py-3 border rounded-pill shadow-sm text-center"
-        :class="selectedAnsId === id ? ansStatus : ''"
-      >
-        {{ body }}
-      </h3>
+    <div class="row d-flex justify-content-between mb-5">
+      <h4>{{ player.name }}</h4>
+      <h4 v-if="player.score">Score: {{ player.score }}</h4>
     </div>
-    <b-button
-      v-if="turnId === playerId"
-      variant="primary"
-      class="float-right"
-      :disabled="disabled"
-      @click="submit"
-      >Confirm</b-button
-    >
+    <div>
+      <h1 class="text-center">Q: {{ this.currentQuestion.body }}</h1>
+      <hr />
+      <div class="row d-flex justify-content-around">
+        <h3
+          v-for="{ id, body } in shuffledOptions"
+          :key="id"
+          @click="turnId === playerId && selectedAnswer(id)"
+          role="button"
+          class="col-5 my-3 py-3 border rounded-pill shadow-sm text-center"
+          :class="selectedAnsId === id ? ansStatus : ''"
+        >
+          {{ body }}
+        </h3>
+      </div>
+      <b-button
+        v-if="turnId === playerId && !disabled"
+        variant="primary"
+        class="float-right"
+        :disabled="disabled"
+        @click="submit"
+      >
+        Confirm
+      </b-button>
+    </div>
   </div>
 </template>
 
 <script>
+  import { mapGetters } from "vuex";
   export default {
     props: {
       playerId: { type: Number },
@@ -42,7 +50,20 @@
       };
     },
 
+    watch: {
+      currentQuestion: {
+        immediate: true,
+        handler: function(newValue) {
+          if (newValue) this.disabled = false;
+        },
+      },
+    },
+
     computed: {
+      ...mapGetters({
+        player: "currentPlayer",
+      }),
+
       shuffledOptions() {
         var array = this.currentQuestion.options;
         var currentIndex = array.length,
@@ -69,11 +90,26 @@
       },
     },
 
+    mounted() {
+      this.listenForScoreChange();
+    },
+
     methods: {
+      listenForScoreChange() {
+        window.Echo.channel("quizy" + this.player.quiz_id).listen(
+          "ScoreChanged",
+          (e) => {
+            let { scores } = e;
+            scores.forEach(({ player_id, score }) => {
+              this.$store.commit("UPDATE_SCORE", { player_id, score });
+            });
+          }
+        );
+      },
+
       selectedAnswer(id) {
         this.selectedAnsId = id;
         this.ansStatus = "selected";
-        this.disabled = false;
       },
 
       submit() {
