@@ -67,6 +67,8 @@
         window.Echo.channel("quizy" + this.player.quiz_id).listen(
           "PlayerJoined",
           (e) => {
+            console.log("PlayerJoined ", e);
+
             this.players.push(e.player);
             // this.$toasted.show(e.player.name+" joined!");
           }
@@ -77,6 +79,7 @@
         window.Echo.channel("Quizy" + this.player.quiz_id).listen(
           "QuestionChanged",
           (e) => {
+            console.log("QuestionChanged ", e);
             this.turnId = e.quiz.player_id;
             this.currentQuestion = e.question;
             this.quizHasStarted = true;
@@ -88,6 +91,7 @@
         window.Echo.channel("quizy" + this.player.quiz_id).listen(
           "QuizEnded",
           (e) => {
+            console.log("QuizEnded ", e);
             this.quizHasEnded = true;
             this.REPLACE_PLAYERS(e.quiz.players.map(player => ({...player, score: player.score.score })));
           }

@@ -4,11 +4,12 @@
       <h4>{{ player.name }}</h4>
       <h4 v-if="player.score">Score: {{ player.score }}</h4>
     </div>
-    <div>
-      <h1 class="text-center">Q: {{ this.currentQuestion.body }}</h1>
+    <div v-if="currentQuestion">
+      <h3 class="text-center">{{ currentQuestion.body }}</h3>
       <hr />
+      <img v-if="currentQuestion.image" :src="currentQuestion.image_url" style="height: 200px; width: 100%; object-fit: contain" />
       <div class="row d-flex justify-content-around">
-        <h3
+        <h5
           v-for="{ id, body } in shuffledOptions"
           :key="id"
           @click="turnId === playerId && selectedAnswer(id)"
@@ -17,7 +18,7 @@
           :class="selectedAnsId === id ? ansStatus : ''"
         >
           {{ body }}
-        </h3>
+        </h5>
       </div>
       <b-button
         v-if="turnId === playerId && !disabled"
@@ -54,7 +55,9 @@
       currentQuestion: {
         immediate: true,
         handler: function(newValue) {
-          if (newValue) this.disabled = false;
+          if (newValue) {
+            this.disabled = false;
+          }
         },
       },
     },
