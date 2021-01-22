@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class PlayerController extends Controller {
   public function create(Request $request) {
-    $quiz = Quiz::wherePin($request->pin)->first();
+    $quiz = Quiz::wherePin($request->pin)->firstOrFail();
     $validData = $request->validate([
       'name' => 'required|min:3|unique:players,name,NULL,id,quiz_id,' . $quiz->id,
       'pin' => 'required',
