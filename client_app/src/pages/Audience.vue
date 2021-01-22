@@ -30,8 +30,7 @@
         <div v-else>
           <h1 class="text-center">Q: {{ this.currentQuestion.body }}</h1>
           <hr />
-      <img v-if="currentQuestion.image" :src="currentQuestion.image_url" style="height: 200px; width: 100%; object-fit: contain" />
-
+          <img v-if="currentQuestion.image" :src="currentQuestion.image_url" style="height: 200px; width: 100%; object-fit: contain" />
           <div class="row d-flex justify-content-around">
             <h3
               v-for="{ id, body } in currentQuestion.options"
