@@ -12,7 +12,7 @@
         <h5
           v-for="{ id, body } in shuffledOptions"
           :key="id"
-          @click="turnId === playerId && selectedAnswer(id)"
+          @click="turnId === playerId && !alreadyAnswered && selectedAnswer(id)"
           role="button"
           class="col-5 my-3 py-3 border rounded-pill shadow-sm text-center"
           :class="selectedAnsId === id ? ansStatus : ''"
@@ -20,15 +20,23 @@
           {{ body }}
         </h5>
       </div>
-      <b-button
-        v-if="turnId === playerId && !disabled"
-        variant="primary"
-        class="float-right"
-        :disabled="disabled"
-        @click="submit"
-      >
-        Confirm
-      </b-button>
+      <div class="d-flex justify-content-between">
+        <b-button
+          v-if="turnId === playerId"
+          @click="pass"
+          :disabled="alreadyAnswered"
+        >
+          Pass
+        </b-button>
+        <b-button
+          v-if="turnId === playerId"
+          variant="primary"
+          :disabled="disabled"
+          @click="submit"
+        >
+          Confirm
+        </b-button>
+      </div>
     </div>
   </div>
 </template>
@@ -48,6 +56,7 @@
         ansStatus: "",
         incrementScoreBy: 5,
         disabled: true,
+        alreadyAnswered: false,
       };
     },
 
@@ -56,7 +65,7 @@
         immediate: true,
         handler: function(newValue) {
           if (newValue) {
-            this.disabled = false;
+            this.alreadyAnswered = false;
           }
         },
       },
@@ -111,11 +120,13 @@
       },
 
       selectedAnswer(id) {
+        this.disabled = false;
         this.selectedAnsId = id;
         this.ansStatus = "selected";
       },
 
       submit() {
+        this.alreadyAnswered = true;
         this.disabled = true;
         var correct = new Audio(require("@/assets/sounds/correct.mp3"));
         var wrong = new Audio(require("@/assets/sounds/wrong.mp3"));
@@ -133,6 +144,10 @@
           }
         }, 1000);
       },
+
+      pass() {
+        console.log('passing')
+      }
     },
   };
 </script>

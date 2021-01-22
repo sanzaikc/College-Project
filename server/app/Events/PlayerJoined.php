@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Player;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -12,6 +13,7 @@ class PlayerJoined implements ShouldBroadcast {
   use Dispatchable, InteractsWithSockets, SerializesModels;
 
   public $player;
+  public $players;
   /**
    * Create a new event instance.
    *
@@ -19,6 +21,7 @@ class PlayerJoined implements ShouldBroadcast {
    */
   public function __construct($player) {
     $this->player = $player;
+    $this->players = Player::where('quiz_id', $player->quiz_id)->get();
   }
 
   /**
