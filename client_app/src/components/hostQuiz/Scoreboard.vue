@@ -6,6 +6,7 @@
           v-for="(player, index) in sortedArray"
           :key="player.id"
           class="d-flex justify-content-between align-items-center"
+          :active="turnId === player.id"
         >
           <p class="m-0">
             <b-badge
@@ -33,7 +34,9 @@
     },
 
     data() {
-      return {};
+      return {
+        turnId: null,
+      };
     },
 
     computed: {
@@ -53,6 +56,7 @@
 
     mounted() {
       this.listenForScoreChange();
+      this.listenForQuestionChange();
     },
 
     methods: {
@@ -64,6 +68,16 @@
             scores.forEach(({ player_id, score }) => {
               this.$store.commit("UPDATE_SCORE", { player_id, score });
             });
+          }
+        );
+      },
+
+      listenForQuestionChange() {
+        window.Echo.channel("Quizy" + this.quizId).listen(
+          "QuestionChanged",
+          (e) => {
+            console.log("QuestionChanged ", e);
+            this.turnId = e.quiz.player_id;
           }
         );
       },

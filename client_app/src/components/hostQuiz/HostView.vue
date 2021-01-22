@@ -5,7 +5,6 @@
       style="max-height: calc(100vh - 180px); overflow-y: auto;"
     >
       <h5>Questions</h5>
-      {{JSON.stringify(turnList)}}
       <div class="row">
         <div
           class="col-6 mb-3"
