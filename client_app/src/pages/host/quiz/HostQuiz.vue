@@ -48,6 +48,7 @@
       </div>
       <div class="col-lg-9">
         <HostView
+          :turnList="turnList"
           :allQuestions="allQuestions"
           @onGameStart="gameStarted = true"
           @onGameFinish="endQuiz"
@@ -73,6 +74,7 @@
       return {
         copied: false,
         gameStarted: false,
+        turnList: [],
         // start: false,
         // selectedQuestion: null,
       };
@@ -94,6 +96,7 @@
     },
 
     mounted() {
+      this.turnList = this.players.map(p => p.id);
       this.QUIZ_DETAIL(this.$route.params.id);
     },
 
@@ -107,6 +110,7 @@
             e.player.score = 0;
             this.ADD_PLAYERS(e.player);
             this.$toasted.show(e.player.name + " joined!");
+            this.turnList.push(e.player.id);
           }
         );
       },

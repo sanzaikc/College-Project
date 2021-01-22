@@ -5,12 +5,14 @@
       style="max-height: calc(100vh - 180px); overflow-y: auto;"
     >
       <h5>Questions</h5>
+      {{JSON.stringify(turnList)}}
       <div class="row">
         <div
-          class="col-12 mb-3"
+          class="col-6 mb-3"
           v-for="(categoryQuestion, key) in categoryWiseQuestions"
           :key="key"
         >
+          <h6>{{ categoryQuestion[0].category.name }}</h6>
           <b-list-group>
             <b-list-group-item
               button
@@ -21,17 +23,10 @@
                   : false
               "
               class="py-2"
-              :class="{
-                'bg-secondary text-white': selectedQuestions.includes(
-                  question.id
-                ),
-              }"
+              :class="{'bg-secondary text-white' : selectedQuestions.includes(question.id)}"
               v-for="question in categoryQuestion"
               :key="question.id"
-              @click="
-                !selectedQuestions.includes(question.id) &&
-                  setQuestion(question)
-              "
+              @click="!selectedQuestions.includes(question.id) && setQuestion(question)"
             >
               <div v-text="question.body" />
             </b-list-group-item>
@@ -64,19 +59,7 @@
           {{ option.body }}
         </b-badge>
       </div>
-      <!-- <b-button class="p-0" block variant="link" @click="chooseRandomQuestion"
-        >Choose random question</b-button
-      >
-      <b-button class="p-0" block id="popover-target-1" variant="link">
-        Choose random question from a category
-      </b-button> -->
-      <!-- <b-popover target="popover-target-1" triggers="hover" placement="bottom">
-        <template #title>Available Categories</template>
-        <p>General</p>
-        <p>Science</p>
-        <p>Sports</p>
-      </b-popover> -->
-      <b-button
+       <b-button
         block
         class="my-3"
         variant="primary"
@@ -95,6 +78,7 @@
   export default {
     props: {
       allQuestions: { type: Array },
+      turnList: {type: Array},
     },
 
     data() {
@@ -176,9 +160,9 @@
           let { status } = await this.$store.dispatch("changeCurrentQuestion", {
             quizId: this.quizId,
             questionId: this.selectedQuestion.id,
-            playerId: this.players[this.turnIndex].id,
+            playerId: this.turnList[this.turnIndex],
           });
-          this.turnIndex = (this.turnIndex + 1) % this.players.length;
+          this.turnIndex = (this.turnIndex + 1) % this.turnList.length;
           if (status === 200) {
             console.log("Success");
           }
