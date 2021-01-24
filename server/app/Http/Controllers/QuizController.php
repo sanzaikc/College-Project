@@ -96,4 +96,12 @@ class QuizController extends Controller {
     $quiz->players()->delete();
     return response(['quiz' => $quiz]);
   }
+
+  public function getQuizDetails(Request $request, $quiz) {
+    $quiz = Quiz::with(['players', 'players.score'])->where('id', $quiz)->first();
+    $currentQuestion = Question::with(['options', 'answer'])->where('id', $quiz->current_question)->first();
+
+    $quiz['current_question'] = $currentQuestion;
+    return response(['quiz' => $quiz]);
+  }
 }

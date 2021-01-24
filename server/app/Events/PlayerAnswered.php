@@ -4,24 +4,19 @@ namespace App\Events;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class QuestionChanged implements ShouldBroadcast {
+class PlayerAnswered {
   use Dispatchable, InteractsWithSockets, SerializesModels;
-  public $question;
-  public $quiz;
-  public $quiz_id;
+
   /**
    * Create a new event instance.
    *
    * @return void
    */
-  public function __construct($question, $quiz) {
-    $this->question = $question;
-    $this->quiz = $quiz;
-    $this->quiz_id = $quiz->id;
+  public function __construct() {
+    //
   }
 
   /**
@@ -30,6 +25,6 @@ class QuestionChanged implements ShouldBroadcast {
    * @return \Illuminate\Broadcasting\Channel|array
    */
   public function broadcastOn() {
-    return new Channel('quizy' . $this->quiz->id);
+    return new Channel('quizy');
   }
 }
