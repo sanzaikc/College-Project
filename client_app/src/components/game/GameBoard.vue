@@ -44,7 +44,7 @@
 
     data() {
       return {
-        quizStarted: true, //have to relay on better data for these variables
+        quizStarted: false, //have to relay on better data for these variables
         quizEnded: false,
         time: 30,
       };
@@ -137,6 +137,7 @@
           (e) => {
             this.quiz = { ...this.quiz, current_question: e.question };
             this.quizStarted = true;
+            this.time = 30;
             this.startTimer();
           }
         );
