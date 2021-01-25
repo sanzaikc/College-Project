@@ -1,0 +1,88 @@
+<template>
+  <div>
+    <div class="question-card">
+      <div class="question-genre">
+        General Knowledge
+      </div>
+      <div class="question">
+        {{ question.body }}
+      </div>
+    </div>
+
+    <div class="options">
+      <div class="option" v-for="{ id, body } in options" :key="id">
+        {{ body }}
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+  export default {
+    props: {
+      question: { type: Object },
+    },
+
+    computed: {
+      options() {
+        return this.question.options;
+      },
+
+      correctAnswer() {
+        return this.question.answer;
+      },
+    },
+  };
+</script>
+
+<style>
+  .question-card {
+    position: relative;
+    background-color: white;
+    border-radius: 0.25rem;
+    box-shadow: 0 2px 5px lightgray;
+  }
+
+  .question-genre {
+    display: inline-block;
+    position: absolute;
+    top: -17%;
+    left: 50%;
+    transform: translate(-50%, 17%);
+    background: purple;
+    color: white;
+    border-radius: 2rem;
+    box-shadow: 0 2px 10px lightgray;
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .question {
+    padding: 1.5rem 2rem;
+    padding-top: 2.5rem;
+    text-align: center;
+    font-weight: 500;
+    font-size: 1.25rem;
+  }
+
+  .options {
+    margin-top: 1rem;
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-gap: 1rem;
+  }
+
+  .option {
+    padding: 1rem;
+    border-radius: 0.25rem;
+    border: 2px solid rgb(207, 91, 207);
+    text-align: center;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .option:hover {
+    background-color: rgb(206, 148, 206);
+    color: white;
+  }
+</style>

@@ -1,26 +1,15 @@
 <template>
   <div>
     <b-row class="my-5">
-      <b-col cols="12" lg="3">
+      <b-col cols="12" lg="2">
         <!-- scoreboard if quiz has been started -->
         <!-- else list of players -->
         <b-card v-if="quizStarted"> Scoreboard </b-card>
       </b-col>
-      <b-col cols="12" lg="6">
+      <b-col cols="12" lg="8">
         <!-- the question -->
         <div v-if="quizStarted">
-          <h3 style="text-align: center">
-            {{ question.body }}
-          </h3>
-
-          <div v-for="{ id, body } in options" :key="id">
-            <b-button
-              :variant="id == correctAnswer.option_id ? 'success' : ''"
-              class="my-2"
-            >
-              {{ body }}
-            </b-button>
-          </div>
+          <display :question="question" />
         </div>
 
         <div v-else>
@@ -36,7 +25,7 @@
         </div>
       </b-col>
 
-      <b-col cols="12" lg="3">
+      <b-col cols="12" lg="2">
         <div v-if="quizStarted">
           <div v-if="!timesUp" style="font-size: 5rem">{{ time }}s</div>
           <div v-else>Time is up</div>
@@ -48,11 +37,14 @@
 
 <script>
   import $axios from "@/plugins/axios";
+  import Display from "./Display.vue";
 
   export default {
+    components: { Display },
+
     data() {
       return {
-        quizStarted: false, //have to relay on better data for these variables
+        quizStarted: true, //have to relay on better data for these variables
         quizEnded: false,
         time: 30,
       };
