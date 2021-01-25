@@ -9,14 +9,20 @@ use Illuminate\Queue\SerializesModels;
 
 class PlayerAnswered {
   use Dispatchable, InteractsWithSockets, SerializesModels;
-
+  public $player;
+  public $scores;
+  public $optionId;
   /**
    * Create a new event instance.
    *
    * @return void
    */
-  public function __construct() {
-    //
+  public function __construct($player, $optionId) {
+    $this->player = $player;
+    $this->optionId = $optionId;
+    $this->scores = Score::whereHas('player', function (Builder $query) {
+      $query->where('quiz_id', $this->player->quiz->id);
+    })->get();
   }
 
   /**
@@ -25,6 +31,6 @@ class PlayerAnswered {
    * @return \Illuminate\Broadcasting\Channel|array
    */
   public function broadcastOn() {
-    return new Channel('quizy');
+    return new Channel('quizy' . $this->player->quiz->id);
   }
 }
