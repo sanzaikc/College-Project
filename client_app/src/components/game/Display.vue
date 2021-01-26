@@ -9,6 +9,10 @@
       </div>
     </div>
 
+    <div v-if="image" class="question-image">
+      <img :src="image" alt="" height="200" />
+    </div>
+
     <div class="options">
       <div
         class="option"
@@ -50,6 +54,10 @@
 
       correctAnswer() {
         return this.question.answer;
+      },
+
+      image() {
+        return this.question.image_url;
       },
 
       playerId() {
@@ -120,6 +128,18 @@
     text-align: center;
     font-weight: 500;
     font-size: 1.25rem;
+  }
+
+  .question-image {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .question-image img {
+    height: 200px;
+    border-radius: 0.25rem;
+    object-fit: contain;
   }
 
   .options {
