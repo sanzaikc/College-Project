@@ -2,24 +2,17 @@
   <div>
     <b-card no-body header="Scoreboard" class="w-100">
       <transition-group tag="b-list-group" name="flip-list" flush>
+        <!-- :active="turnId === player.id" -->
         <b-list-group-item
-          v-for="(player, index) in sortedArray"
-          :key="player.id"
+          v-for="(score, index) in sortedArray"
+          :key="index"
           class="d-flex justify-content-between align-items-center"
-          :active="turnId === player.id"
         >
-          <p class="m-0">
-            <b-badge
-              v-if="index < 3 && player.score > 0"
-              :variant="playerRank(index).color"
-              class="py-1 mr-2"
-              pill
-            >
-              {{ playerRank(index).rank }}
-            </b-badge>
-            {{ player.name }}
+          <p class="m-0" v-if="index < 3 && score.score > 0" :variant="playerRank(index).color">
+            <b-badge class="py-1 mr-2" pill>{{ playerRank(index).rank }}</b-badge>
+            {{ score.name }}
           </p>
-          <b>{{ player.score }}</b>
+          <b>{{ score.score }}</b>
         </b-list-group-item>
       </transition-group>
     </b-card>
@@ -27,88 +20,55 @@
 </template>
 
 <script>
-  import { mapState } from "vuex";
-  export default {
-    props: {
-      quizId: { type: Number },
+export default {
+  props: {
+    scores: { type: Array },
+  },
+
+  // data() {
+  //   return {
+  //     turnId: null,
+  //   };
+  // },
+
+  computed: {
+    showRanking() {
+      return this.scores.filter((p) => p.score > 0);
     },
-
-    data() {
-      return {
-        turnId: null,
-      };
+    sortedArray: function () {
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      return this.scores.sort((a, b) => (a.score > b.score ? -1 : 1));
     },
+  },
 
-    computed: {
-      ...mapState({
-        players: (state) => state.quiz.players,
-      }),
+  methods: {
+    playerRank(index) {
+      let ranks = [
+        {
+          index: 0,
+          rank: "1st",
+          color: "success",
+        },
+        {
+          index: 1,
+          rank: "2nd",
+          color: "info",
+        },
+        {
+          index: 2,
+          rank: "3rd",
+          color: "warning",
+        },
+      ];
 
-      showRanking() {
-        return this.players.filter((p) => p.score > 0);
-      },
-
-      sortedArray: function() {
-        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        return this.players.sort((a, b) => (a.score > b.score ? -1 : 1));
-      },
+      return ranks[index];
     },
-
-    mounted() {
-      this.listenForScoreChange();
-      this.listenForQuestionChange();
-    },
-
-    methods: {
-      listenForScoreChange() {
-        window.Echo.channel("quizy" + this.quizId).listen(
-          "ScoreChanged",
-          (e) => {
-            let { scores } = e;
-            scores.forEach(({ player_id, score }) => {
-              this.$store.commit("UPDATE_SCORE", { player_id, score });
-            });
-          }
-        );
-      },
-
-      listenForQuestionChange() {
-        window.Echo.channel("Quizy" + this.quizId).listen(
-          "QuestionChanged",
-          (e) => {
-            console.log("QuestionChanged ", e);
-            this.turnId = e.quiz.player_id;
-          }
-        );
-      },
-
-      playerRank(index) {
-        let ranks = [
-          {
-            index: 0,
-            rank: "1st",
-            color: "success",
-          },
-          {
-            index: 1,
-            rank: "2nd",
-            color: "info",
-          },
-          {
-            index: 2,
-            rank: "3rd",
-            color: "warning",
-          },
-        ];
-
-        return ranks[index];
-      },
-    },
-  };
+  },
+};
 </script>
 
 <style>
-  .flip-list-move {
-    transition: transform 1s;
-  }
+.flip-list-move {
+  transition: transform 1s;
+}
 </style>
