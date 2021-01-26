@@ -2,7 +2,7 @@
   <div>
     <div class="question-card">
       <div class="question-genre">
-        General Knowledge
+        {{ question.category.name }}
       </div>
       <div class="question">
         {{ question.body }}
