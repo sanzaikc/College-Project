@@ -6,9 +6,9 @@
         <!-- else list of players -->
         <div v-if="quizHasStarted">
           Scoreboard
-          <b-list-group-item v-for="item in scores" :key="item.id"
-            >{{ item.name }}- {{ item.score }}</b-list-group-item
-          >
+          <b-list-group-item v-for="item in scores" :key="item.id">
+            {{ item.name }}- {{ item.score }}
+          </b-list-group-item>
         </div>
       </b-col>
       <b-col cols="12" lg="8">
