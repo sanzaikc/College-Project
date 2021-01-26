@@ -10,17 +10,37 @@
     </div>
 
     <div class="options">
-      <div class="option" v-for="{ id, body } in options" :key="id">
+      <div
+        class="option"
+        v-for="{ id, body } in options"
+        :key="id"
+        @click="handleSelection(id)"
+        :class="id === selectedAns ? 'active' : ''"
+      >
         {{ body }}
       </div>
+    </div>
+
+    <div class="actions my-2">
+      <b-button v-if="isPlayerTurn" @click="submitAnswer">Confirm</b-button>
     </div>
   </div>
 </template>
 
 <script>
   export default {
+    name: "Display",
+
     props: {
       question: { type: Object },
+      turnOf: { type: Number },
+    },
+
+    data() {
+      return {
+        selectedAns: null,
+        hasAnswered: false,
+      };
     },
 
     computed: {
@@ -30,6 +50,43 @@
 
       correctAnswer() {
         return this.question.answer;
+      },
+
+      playerId() {
+        return this.$route.params.playerId;
+      },
+
+      isPlayerTurn() {
+        return (
+          !this.hasAnswered && this.playerId && this.turnOf == this.playerId
+        );
+      },
+    },
+
+    watch: {
+      question: {
+        handler: function(nv) {
+          if (nv) this.hasAnswered = false;
+        },
+      },
+    },
+
+    methods: {
+      handleSelection(selectedId) {
+        if (this.isPlayerTurn) this.selectedAns = selectedId;
+      },
+
+      submitAnswer() {
+        if (this.selectedAns) {
+          this.hasAnswered = true;
+          this.$store.dispatch("submitScore", {
+            playerId: this.playerId,
+            score: this.selectedAns === this.correctAnswer.option_id ? 5 : 0,
+            optionId: this.selectedAns,
+          });
+        } else {
+          alert("Select Answer first");
+        }
       },
     },
   };
@@ -83,6 +140,11 @@
   }
 
   .option:hover {
+    background-color: rgba(202, 130, 202, 0.295);
+    color: purple;
+  }
+
+  .active {
     background-color: rgba(202, 130, 202, 0.295);
     color: purple;
   }

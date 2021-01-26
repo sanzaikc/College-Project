@@ -235,12 +235,13 @@ const actions = {
     });
   },
 
-  submitScore: (context, { playerId, score }) => {
+  submitScore: (context, { playerId, score, optionId }) => {
     return new Promise((resolve, reject) => {
       $axios
         .post("/score", {
           player_id: playerId,
           score,
+          optionId,
         })
         .then((res) => {
           if (res.status == 200) resolve(res.data);

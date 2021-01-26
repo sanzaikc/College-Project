@@ -4,12 +4,17 @@
       <b-col cols="12" lg="2">
         <!-- scoreboard if quiz has been started -->
         <!-- else list of players -->
-        <b-card v-if="quizStarted"> Scoreboard </b-card>
+        <div v-if="quizStarted">
+          Scoreboard
+          <b-list-group-item v-for="item in scores" :key="item.id">
+            {{ item.name }}- {{ item.score }}
+          </b-list-group-item>
+        </div>
       </b-col>
       <b-col cols="12" lg="8">
         <!-- the question -->
         <div v-if="quizStarted">
-          <display :question="question" />
+          <Display :question="question" :turnOf="playerTurnId" />
         </div>
 
         <div v-else>
@@ -44,9 +49,11 @@
 
     data() {
       return {
+        quiz: null,
         quizStarted: false, //have to relay on better data for these variables
         quizEnded: false,
         time: 30,
+        scores: [],
       };
     },
 
@@ -62,16 +69,6 @@
         return [];
       },
 
-      scores() {
-        if (this.quiz)
-          return this.players.map((player) => ({
-            id: player.id,
-            name: player.name,
-            score: player.score ? player.score.score : 0,
-          }));
-        return [];
-      },
-
       question() {
         if (this.quiz) return this.quiz.current_question;
         return {};
@@ -81,12 +78,35 @@
         return this.question.options;
       },
 
+      playerTurnId() {
+        return this.quiz.player_id;
+      },
+
       correctAnswer() {
         return this.question.answer;
       },
 
       timesUp() {
         return !this.time > 0;
+      },
+    },
+
+    watch: {
+      question: {
+        immediate: true,
+        handler: function(nv) {
+          if (nv) {
+            this.updateScores();
+          }
+        },
+      },
+      players: {
+        immediate: true,
+        handler: function(nv) {
+          if (nv) {
+            this.updateScores();
+          }
+        },
       },
     },
 
@@ -135,10 +155,14 @@
         window.Echo.channel("quizy" + this.quizId).listen(
           "QuestionChanged",
           (e) => {
-            this.quiz = { ...this.quiz, current_question: e.question };
+            this.quiz = {
+              ...this.quiz,
+              current_question: e.question,
+              player_id: e.quiz.player_id,
+            };
             this.quizStarted = true;
             this.time = 30;
-            this.startTimer();
+            // this.startTimer();
           }
         );
       },
@@ -150,7 +174,22 @@
         });
       },
 
-      listenForPlayerAnswer() {},
+      listenForPlayerAnswer() {
+        window.Echo.channel("quizy" + this.quizId).listen(
+          "PlayerAnswered",
+          (e) => {
+            let updatedScores = e.scores;
+            this.scores = this.scores.map((score) => {
+              let updatedScore = updatedScores.find(
+                (us) => us.player_id == score.id
+              );
+              return updatedScore
+                ? { ...score, score: updatedScore.score }
+                : score;
+            });
+          }
+        );
+      },
 
       listenForPass() {},
 
@@ -161,6 +200,14 @@
             this.startTimer();
           }
         }, 1000);
+      },
+
+      updateScores() {
+        this.scores = this.players.map((player) => ({
+          id: player.id,
+          name: player.name,
+          score: player.score ? player.score.score : 0,
+        }));
       },
     },
   };
