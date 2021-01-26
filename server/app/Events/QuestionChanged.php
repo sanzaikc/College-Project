@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Quiz;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -20,7 +21,7 @@ class QuestionChanged implements ShouldBroadcast {
    */
   public function __construct($question, $quiz) {
     $this->question = $question;
-    $this->quiz = $quiz;
+    $this->quiz = Quiz::with(['players', 'players.score'])->where('id', $quiz->id)->first();
     $this->quiz_id = $quiz->id;
   }
 
