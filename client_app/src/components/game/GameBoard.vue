@@ -92,19 +92,11 @@
     },
 
     watch: {
-      question: {
-        immediate: true,
-        handler: function(nv) {
-          if (nv) {
-            this.updateScores();
-          }
-        },
-      },
       players: {
         immediate: true,
         handler: function(nv) {
           if (nv) {
-            this.updateScores();
+            this.initiateScores();
           }
         },
       },
@@ -202,7 +194,7 @@
         }, 1000);
       },
 
-      updateScores() {
+      initiateScores() {
         this.scores = this.players.map((player) => ({
           id: player.id,
           name: player.name,
