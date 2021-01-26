@@ -7,10 +7,10 @@
       <div class="question">
         {{ question.body }}
       </div>
-    </div>
 
-    <div v-if="image" class="question-image">
-      <img :src="image" alt="" height="200" />
+      <div v-if="image" class="question-image">
+        <img :src="image" alt="" height="200" />
+      </div>
     </div>
 
     <div class="options">
@@ -111,7 +111,7 @@
   .question-genre {
     display: inline-block;
     position: absolute;
-    top: -17%;
+    top: -20px;
     left: 50%;
     transform: translate(-50%, 17%);
     background: purple;
@@ -145,7 +145,7 @@
   .options {
     margin-top: 1rem;
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: 1fr 1fr;
     grid-gap: 1rem;
   }
 
@@ -154,7 +154,6 @@
     border-radius: 0.25rem;
     border: 2px solid rgb(235, 189, 235);
     text-align: center;
-    font-size: 1.25rem;
     font-weight: 600;
     cursor: pointer;
   }
