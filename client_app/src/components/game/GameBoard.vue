@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-row class="my-4">
+    <b-row class="my-4" v-if="!quizEnded">
       <b-col cols="12" lg="3">
         <!-- scoreboard if quiz has been started -->
         <!-- else list of players -->
@@ -30,12 +30,17 @@
           </b-card>
         </div>
       </b-col>
-
       <b-col cols="12" lg="3">
         <div v-if="quizHasStarted">
           <div v-if="!timesUp" style="font-size: 5rem">{{ time }}s</div>
           <div v-else>Time is up</div>
         </div>
+      </b-col>
+    </b-row>
+
+    <b-row v-else class="my-5" align-h="center">
+      <b-col cols="4">
+        <scoreboard :scores="scores" :turnOf="playerTurnId" />
       </b-col>
     </b-row>
   </div>
