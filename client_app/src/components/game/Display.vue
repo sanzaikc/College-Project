@@ -133,10 +133,10 @@
         this.selectedAns = optionSelected;
         if (optionSelected == this.correctAnswer.option_id) {
           this.optionColor = "correct";
-          this.isPlayerTurn && this.correctSound.play();
+          this.turnOf == this.playerId && this.correctSound.play();
         } else {
           this.optionColor = "wrong";
-          this.isPlayerTurn && this.wrongSound.play();
+          this.turnOf == this.playerId && this.wrongSound.play();
         }
       },
     },

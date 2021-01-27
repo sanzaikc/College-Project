@@ -5,7 +5,7 @@
         <!-- scoreboard if quiz has been started -->
         <!-- else list of players -->
         <div v-if="quizHasStarted">
-          <scoreboard :scores="scores" />
+          <scoreboard :scores="scores" :turnOf="playerTurnId" />
         </div>
       </b-col>
       <b-col cols="12" lg="6">

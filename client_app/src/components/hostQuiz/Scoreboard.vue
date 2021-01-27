@@ -4,6 +4,7 @@
       <transition-group tag="b-list-group" name="flip-list" flush>
         <!-- :active="turnId === player.id" -->
         <b-list-group-item
+          :active="turnOf === score.id"
           v-for="(score, index) in sortedArray"
           :key="score.id"
           class="d-flex justify-content-between align-items-center"
@@ -28,6 +29,7 @@
   export default {
     props: {
       scores: { type: Array },
+      turnOf: { type: Number },
     },
 
     // data() {
