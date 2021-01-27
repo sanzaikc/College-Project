@@ -40,7 +40,7 @@
 
     <b-row v-else class="my-5" align-h="center">
       <b-col cols="4">
-        <scoreboard :scores="scores" :turnOf="playerTurnId" />
+        <scoreboard :scores="scores" />
       </b-col>
     </b-row>
   </div>
