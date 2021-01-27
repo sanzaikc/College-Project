@@ -45,6 +45,9 @@
         selectedAns: null,
         hasAnswered: false,
         optionColor: "active",
+
+        correctSound: new Audio(require("@/assets/sounds/correct.mp3")),
+        wrongSound: new Audio(require("@/assets/sounds/wrong.mp3")),
       };
     },
 
@@ -120,15 +123,27 @@
           "PlayerAnswered",
           (e) => {
             let { scores: updatedScores, optionId: optionSelected } = e;
-            this.selectedAns = optionSelected;
-            this.optionColor =
-              optionSelected == this.correctAnswer.option_id
-                ? "correct"
-                : "wrong";
-
+            this.checkAnswer(optionSelected);
             this.$emit("onScoreUpdate", updatedScores);
           }
         );
+      },
+
+      checkAnswer(optionSelected) {
+        this.selectedAns = optionSelected;
+        if (optionSelected == this.correctAnswer.option_id) {
+          this.optionColor = "correct";
+          this.playSound(true);
+        } else {
+          this.optionColor = "wrong";
+          this.playSound(false);
+        }
+      },
+
+      playSound(isCorrect) {
+        if (this.isPlayerTurn) {
+          isCorrect ? this.correctSound.play() : this.wrongSound.play();
+        }
       },
     },
   };
