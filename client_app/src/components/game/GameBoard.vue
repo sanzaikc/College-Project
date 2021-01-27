@@ -11,7 +11,11 @@
       <b-col cols="12" lg="6">
         <!-- the question -->
         <div v-if="quizHasStarted">
-          <Display :question="question" :turnOf="playerTurnId" />
+          <Display
+            :question="question"
+            :turnOf="playerTurnId"
+            @onScoreUpdate="updateScores"
+          />
         </div>
 
         <div v-else>
@@ -110,7 +114,7 @@
 
       this.listenForQuestionChange();
 
-      this.listenForPlayerAnswer();
+      // this.listenForPlayerAnswer();
 
       this.listenForPass();
 
@@ -164,27 +168,38 @@
 
       listenForQuizEnd() {
         window.Echo.channel("quizy" + this.quizId).listen("QuizEnded", (e) => {
-          this.quizEnded = true;
-          console.log(e);
+          if (e) {
+            this.quizEnded = true;
+          }
         });
       },
 
-      listenForPlayerAnswer() {
-        window.Echo.channel("quizy" + this.quizId).listen(
-          "PlayerAnswered",
-          (e) => {
-            let updatedScores = e.scores;
-            this.scores = this.scores.map((score) => {
-              let updatedScore = updatedScores.find(
-                (us) => us.player_id == score.id
-              );
-              return updatedScore
-                ? { ...score, score: updatedScore.score }
-                : score;
-            });
-          }
-        );
+      updateScores(updatedScores) {
+        this.scores = this.scores.map((score) => {
+          let updatedScore = updatedScores.find(
+            (us) => us.player_id == score.id
+          );
+          return updatedScore ? { ...score, score: updatedScore.score } : score;
+        });
       },
+
+      // listenForPlayerAnswer() {
+      //   window.Echo.channel("quizy" + this.quizId).listen(
+      //     "PlayerAnswered",
+      //     (e) => {
+      //       console.log(e);
+      //       let updatedScores = e.scores;
+      //       this.scores = this.scores.map((score) => {
+      //         let updatedScore = updatedScores.find(
+      //           (us) => us.player_id == score.id
+      //         );
+      //         return updatedScore
+      //           ? { ...score, score: updatedScore.score }
+      //           : score;
+      //       });
+      //     }
+      //   );
+      // },
 
       listenForPass() {},
 

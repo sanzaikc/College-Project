@@ -19,7 +19,7 @@
         v-for="{ id, body } in options"
         :key="id"
         @click="handleSelection(id)"
-        :class="id === selectedAns ? 'active' : ''"
+        :class="id === selectedAns ? optionColor : ''"
       >
         {{ body }}
       </div>
@@ -44,16 +44,25 @@
       return {
         selectedAns: null,
         hasAnswered: false,
+        optionColor: "active",
       };
     },
 
     computed: {
+      quizId() {
+        return this.$route.params.quizId;
+      },
+
       options() {
         return this.question.options;
       },
 
       correctAnswer() {
         return this.question.answer;
+      },
+
+      isCorrectAnswer() {
+        return this.correctAnswer.option_id == this.selectedAns;
       },
 
       image() {
@@ -74,12 +83,21 @@
     watch: {
       question: {
         handler: function(nv) {
-          if (nv) this.hasAnswered = false;
+          if (nv) this.reset();
         },
       },
     },
 
+    created() {
+      this.listenForPlayerAnswer();
+    },
+
     methods: {
+      reset() {
+        this.hasAnswered = false;
+        this.optionColor = "active";
+      },
+
       handleSelection(selectedId) {
         if (this.isPlayerTurn) this.selectedAns = selectedId;
       },
@@ -89,12 +107,28 @@
           this.hasAnswered = true;
           this.$store.dispatch("submitScore", {
             playerId: this.playerId,
-            score: this.selectedAns === this.correctAnswer.option_id ? 5 : 0,
+            score: this.isCorrectAnswer ? 5 : 0,
             optionId: this.selectedAns,
           });
         } else {
           alert("Select Answer first");
         }
+      },
+
+      listenForPlayerAnswer() {
+        window.Echo.channel("quizy" + this.quizId).listen(
+          "PlayerAnswered",
+          (e) => {
+            let { scores: updatedScores, optionId: optionSelected } = e;
+            this.selectedAns = optionSelected;
+            this.optionColor =
+              optionSelected == this.correctAnswer.option_id
+                ? "correct"
+                : "wrong";
+
+            this.$emit("onScoreUpdate", updatedScores);
+          }
+        );
       },
     },
   };
@@ -166,6 +200,16 @@
   .active {
     background-color: rgba(202, 130, 202, 0.295);
     color: purple;
+  }
+
+  .correct {
+    background-color: rgb(42, 156, 42);
+    color: white;
+  }
+
+  .wrong {
+    background-color: red;
+    color: white;
   }
 
   .buttons {
