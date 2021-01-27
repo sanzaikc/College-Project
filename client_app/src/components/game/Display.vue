@@ -26,7 +26,9 @@
     </div>
 
     <div class="actions my-2">
-      <b-button v-if="isPlayerTurn" @click="submitAnswer">Confirm</b-button>
+      <b-button v-if="isPlayerTurn" :disabled="timesUp" @click="submitAnswer">
+        Confirm
+      </b-button>
     </div>
   </div>
 </template>
@@ -38,6 +40,7 @@
     props: {
       question: { type: Object },
       turnOf: { type: Number },
+      timesUp: { type: Boolean },
     },
 
     data() {
@@ -106,7 +109,7 @@
       },
 
       submitAnswer() {
-        if (this.selectedAns) {
+        if (this.selectedAns && !this.timesUp) {
           this.hasAnswered = true;
           this.$store.dispatch("submitScore", {
             playerId: this.playerId,
@@ -125,6 +128,7 @@
             let { scores: updatedScores, optionId: optionSelected } = e;
             this.checkAnswer(optionSelected);
             this.$emit("onScoreUpdate", updatedScores);
+            this.$emit("onAnswerSubmit");
           }
         );
       },

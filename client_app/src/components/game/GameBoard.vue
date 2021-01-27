@@ -14,7 +14,9 @@
           <Display
             :question="question"
             :turnOf="playerTurnId"
+            :timesUp="timesUp"
             @onScoreUpdate="updateScores"
+            @onAnswerSubmit="stopTimer"
           />
         </div>
 
@@ -37,7 +39,6 @@
         </div>
       </b-col>
     </b-row>
-
     <b-row v-else class="my-5" align-h="center">
       <b-col cols="4">
         <scoreboard :scores="scores" />
@@ -58,8 +59,10 @@
       return {
         quiz: null,
         quizEnded: false,
-        time: 30,
         scores: [],
+
+        time: 10,
+        timer: null,
       };
     },
 
@@ -99,7 +102,7 @@
       },
 
       timesUp() {
-        return !this.time > 0;
+        return this.time <= 0;
       },
     },
 
@@ -155,6 +158,14 @@
         );
       },
 
+      initiateScores() {
+        this.scores = this.players.map((player) => ({
+          id: player.id,
+          name: player.name,
+          score: player.score ? player.score.score : 0,
+        }));
+      },
+
       listenForQuestionChange() {
         window.Echo.channel("quizy" + this.quizId).listen(
           "QuestionChanged",
@@ -165,8 +176,9 @@
               player_id: e.quiz.player_id,
               players: e.players,
             };
-            this.time = 30;
-            // this.startTimer();
+
+            this.time = 10;
+            this.startTimer();
           }
         );
       },
@@ -188,41 +200,29 @@
         });
       },
 
-      // listenForPlayerAnswer() {
-      //   window.Echo.channel("quizy" + this.quizId).listen(
-      //     "PlayerAnswered",
-      //     (e) => {
-      //       console.log(e);
-      //       let updatedScores = e.scores;
-      //       this.scores = this.scores.map((score) => {
-      //         let updatedScore = updatedScores.find(
-      //           (us) => us.player_id == score.id
-      //         );
-      //         return updatedScore
-      //           ? { ...score, score: updatedScore.score }
-      //           : score;
-      //       });
-      //     }
-      //   );
-      // },
-
       listenForPass() {},
 
       startTimer() {
-        setTimeout(() => {
-          if (this.time > 0) {
-            --this.time;
-            this.startTimer();
-          }
-        }, 1000);
+        if (!this.timer) {
+          this.timer = setInterval(() => {
+            if (this.time > 0) {
+              this.time--;
+            } else {
+              clearInterval(this.timer);
+              this.resetTimer();
+            }
+          }, 1000);
+        }
       },
 
-      initiateScores() {
-        this.scores = this.players.map((player) => ({
-          id: player.id,
-          name: player.name,
-          score: player.score ? player.score.score : 0,
-        }));
+      stopTimer() {
+        clearInterval(this.timer);
+        this.timer = null;
+      },
+
+      resetTimer() {
+        this.stopTimer();
+        this.time = 0;
       },
     },
   };

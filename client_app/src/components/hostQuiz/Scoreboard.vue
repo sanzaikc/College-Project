@@ -1,23 +1,24 @@
 <template>
   <div>
     <b-card no-body header="Scoreboard" class="w-100">
-      <transition-group tag="b-list-group" name="flip-list" flush>
-        <!-- :active="turnId === player.id" -->
+      <transition-group class="list-group list-group-flush" name="flip-list">
         <b-list-group-item
           :active="turnOf === score.id"
           v-for="(score, index) in sortedArray"
           :key="score.id"
           class="d-flex justify-content-between align-items-center"
         >
-          <p class="m-0" v-if="index < 3 && score.score > 0">
+          <span class="m-0">
             <b-badge
+              v-if="index < 3 && score.score > 0"
               :variant="playerRank(index).color"
               class="py-1 mr-2"
               pill
-              >{{ playerRank(index).rank }}</b-badge
             >
+              {{ playerRank(index).rank }}
+            </b-badge>
             {{ score.name }}
-          </p>
+          </span>
           <b>{{ score.score }}</b>
         </b-list-group-item>
       </transition-group>
