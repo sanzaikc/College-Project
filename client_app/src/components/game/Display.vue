@@ -133,16 +133,10 @@
         this.selectedAns = optionSelected;
         if (optionSelected == this.correctAnswer.option_id) {
           this.optionColor = "correct";
-          this.playSound(true);
+          this.isPlayerTurn && this.correctSound.play();
         } else {
           this.optionColor = "wrong";
-          this.playSound(false);
-        }
-      },
-
-      playSound(isCorrect) {
-        if (this.isPlayerTurn) {
-          isCorrect ? this.correctSound.play() : this.wrongSound.play();
+          this.isPlayerTurn && this.wrongSound.play();
         }
       },
     },
@@ -217,12 +211,14 @@
     color: purple;
   }
 
-  .correct {
+  .correct,
+  .correct:hover {
     background-color: rgb(42, 156, 42);
     color: white;
   }
 
-  .wrong {
+  .wrong,
+  .wrong:hover {
     background-color: red;
     color: white;
   }
