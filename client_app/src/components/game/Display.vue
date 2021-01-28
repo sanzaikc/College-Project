@@ -25,9 +25,12 @@
       </div>
     </div>
 
-    <div class="actions my-2">
-      <b-button v-if="isPlayerTurn" :disabled="timesUp" @click="submitAnswer">
-        Confirm
+    <div v-if="isPlayerTurn" class="actions my-2">
+      <b-button class="action-button" :disabled="timesUp" @click="submitAnswer">
+        Confrim
+      </b-button>
+      <b-button class="action-button" :disabled="timesUp">
+        Pass
       </b-button>
     </div>
   </div>
@@ -153,6 +156,9 @@
     background-color: white;
     border-radius: 0.25rem;
     border: 3px solid rgba(192, 116, 192, 0.11);
+    min-height: 150px;
+    display: grid;
+    place-content: center;
   }
 
   .question-genre {
@@ -171,10 +177,8 @@
 
   .question {
     padding: 1.5rem 2rem;
-    padding-top: 2.5rem;
-    text-align: center;
-    font-weight: 500;
     font-size: 1.25rem;
+    font-weight: 500;
   }
 
   .question-image {
@@ -227,10 +231,28 @@
     color: white;
   }
 
-  .buttons {
+  .actions {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 2rem;
+  }
+
+  .action-button {
+    background-color: purple;
+    display: inline-block;
+    padding: 0.5rem 1.75rem;
     border-radius: 2rem;
-    box-shadow: 0 2px 10px lightgray;
-    font-size: 0.85rem;
-    padding: 0.5rem 1rem;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .action-button:hover {
+    background-color: rgba(206, 117, 206, 0.479);
+    color: purple;
+  }
+
+  .action-button:disabled {
+    background: lightgrey;
   }
 </style>

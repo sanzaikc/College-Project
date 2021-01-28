@@ -60,7 +60,7 @@
 
 <script>
   import HostView from "@/components/hostQuiz/HostView";
-  import Scoreboard from "@/components/hostQuiz/Scoreboard";
+  import Scoreboard from "@/components/Scoreboard";
 
   import { mapMutations, mapState } from "vuex";
 
@@ -96,7 +96,7 @@
     },
 
     mounted() {
-      this.turnList = this.players.map(p => p.id);
+      this.turnList = this.players.map((p) => p.id);
       this.QUIZ_DETAIL(this.$route.params.id);
     },
 

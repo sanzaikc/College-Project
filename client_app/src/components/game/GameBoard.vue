@@ -1,9 +1,7 @@
 <template>
   <div>
-    <b-row class="my-4" v-if="!quizEnded">
+    <b-row v-if="!quizEnded" style="margin-top: 5%">
       <b-col cols="12" lg="3">
-        <!-- scoreboard if quiz has been started -->
-        <!-- else list of players -->
         <div v-if="quizHasStarted">
           <scoreboard :scores="scores" :turnOf="playerTurnId" />
         </div>
@@ -32,10 +30,21 @@
           </b-card>
         </div>
       </b-col>
-      <b-col cols="12" lg="3">
-        <div v-if="quizHasStarted">
-          <div v-if="!timesUp" style="font-size: 5rem">{{ time }}s</div>
-          <div v-else>Time is up</div>
+      <b-col cols="12" lg="3" v-if="quizHasStarted">
+        <div style="min-height: 150px; display: grid; place-content:center">
+          <h1
+            v-if="!timesUp"
+            :style="{ fontSize: '5rem', color: `${timerColor}` }"
+          >
+            {{ time }}s
+          </h1>
+          <h2 v-else>Time's up!</h2>
+        </div>
+        <br />
+        <div>
+          <h4>
+            Playe Info
+          </h4>
         </div>
       </b-col>
     </b-row>
@@ -49,8 +58,8 @@
 
 <script>
   import $axios from "@/plugins/axios";
-  import Display from "./Display.vue";
-  import Scoreboard from "../hostQuiz/Scoreboard.vue";
+  import Display from "@/components/game/Display.vue";
+  import Scoreboard from "@/components/Scoreboard.vue";
 
   export default {
     components: { Display, Scoreboard },
@@ -61,7 +70,8 @@
         quizEnded: false,
         scores: [],
 
-        time: 10,
+        initialTimerValue: 30,
+        time: 0,
         timer: null,
       };
     },
@@ -103,6 +113,17 @@
 
       timesUp() {
         return this.time <= 0;
+      },
+
+      timerColor() {
+        function percentage(num, per) {
+          return (num / 100) * per;
+        }
+
+        if (this.time <= percentage(this.initialTimerValue, 20)) return "red";
+        if (this.time <= percentage(this.initialTimerValue, 50))
+          return "orange";
+        return "green";
       },
     },
 
@@ -177,7 +198,7 @@
               players: e.players,
             };
 
-            this.time = 10;
+            this.time = this.initialTimerValue;
             this.startTimer();
           }
         );
