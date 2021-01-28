@@ -164,14 +164,13 @@
   .question-genre {
     display: inline-block;
     position: absolute;
-    top: -20px;
+    top: -25px;
     left: 50%;
     transform: translate(-50%, 17%);
-    background: purple;
+    background: steelblue;
     color: white;
     border-radius: 2rem;
     box-shadow: 0 2px 10px lightgray;
-    font-size: 0.85rem;
     padding: 0.5rem 1rem;
   }
 
@@ -203,20 +202,18 @@
   .option {
     padding: 0.75rem;
     border-radius: 0.25rem;
-    border: 2px solid rgb(235, 189, 235);
+    border: 2px solid steelblue;
     text-align: center;
     font-weight: 600;
     cursor: pointer;
   }
 
   .option:hover {
-    background-color: rgba(202, 130, 202, 0.295);
-    color: purple;
+    background-color: rgba(135, 207, 235, 0.342);
   }
 
   .active {
-    background-color: rgba(202, 130, 202, 0.295);
-    color: purple;
+    background-color: rgba(135, 207, 235, 0.342);
   }
 
   .correct,
@@ -238,7 +235,7 @@
   }
 
   .action-button {
-    background-color: purple;
+    background-color: steelblue;
     display: inline-block;
     padding: 0.5rem 1.75rem;
     border-radius: 2rem;
@@ -248,8 +245,8 @@
   }
 
   .action-button:hover {
-    background-color: rgba(206, 117, 206, 0.479);
-    color: purple;
+    background-color: rgba(135, 207, 235, 0.342);
+    color: black;
   }
 
   .action-button:disabled {
