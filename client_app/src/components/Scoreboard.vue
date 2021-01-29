@@ -36,120 +36,119 @@
 </template>
 
 <script>
-  export default {
-    props: {
-      scores: { type: Array },
-      turnOf: { type: Number },
+export default {
+  props: {
+    scores: { type: Array },
+    turnOf: { type: Number },
+  },
+
+  computed: {
+    showRanking() {
+      return this.scores.filter((p) => p.score > 0);
+    },
+    sortedArray: function() {
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      return this.scores.sort((a, b) => (a.score > b.score ? -1 : 1));
     },
 
-    computed: {
-      showRanking() {
-        return this.scores.filter((p) => p.score > 0);
-      },
-      sortedArray: function() {
-        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        return this.scores.sort((a, b) => (a.score > b.score ? -1 : 1));
-      },
-
-      leading() {
-        return this.sortedArray[0];
-      },
+    leading() {
+      return this.sortedArray[0];
     },
+  },
 
-    methods: {
-      playerRank(index) {
-        let ranks = [
-          {
-            index: 0,
-            rank: "1st",
-            color: "green",
-          },
-          {
-            index: 1,
-            rank: "2nd",
-            color: "skyblue",
-          },
-          {
-            index: 2,
-            rank: "3rd",
-            color: "orange",
-          },
-        ];
+  methods: {
+    playerRank(index) {
+      let ranks = [
+        {
+          index: 0,
+          rank: "1st",
+          color: "green",
+        },
+        {
+          index: 1,
+          rank: "2nd",
+          color: "skyblue",
+        },
+        {
+          index: 2,
+          rank: "3rd",
+          color: "orange",
+        },
+      ];
 
-        return ranks[index];
-      },
+      return ranks[index];
     },
-  };
+  },
+};
 </script>
 
 <style>
-  .flip-list-move {
-    transition: transform 1s;
-  }
+.flip-list-move {
+  transition: transform 1s;
+}
 
-  .current {
-    border-left: 2rem solid steelblue;
-  }
+.current {
+  border-left: 2rem solid steelblue;
+}
 
-  .leaderboard-card {
-    background: white;
-    border-radius: 0.25rem;
+.leaderboard-card {
+  background: white;
+  border-radius: 0.25rem;
+  box-shadow: 0 2px 6px rgb(224, 210, 210);
+}
 
-    box-shadow: 0 2px 6px rgb(224, 210, 210);
-  }
+.scores {
+  list-style-type: none;
+  padding: 0;
+  font-size: 1.1rem;
+}
 
-  .scores {
-    list-style-type: none;
-    padding: 0;
-    font-size: 1.1rem;
-  }
+.score {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-  .score {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+.player {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  border-left: 5px solid white;
+}
 
-  .player {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem;
-    border-left: 5px solid white;
-  }
+.status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-grow: 1;
+  font-weight: 600;
+  padding: 0 0.5rem;
+}
 
-  .status {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-grow: 1;
-    font-weight: 600;
-    padding: 0 0.5rem;
-  }
+.badge {
+  color: white;
+  font-size: 0.75rem;
+  border-radius: 2rem;
+  padding: 0.35rem 0.5rem;
+  width: 40px;
+  margin-right: 1rem;
+}
 
-  .badge {
-    color: white;
-    font-size: 0.75rem;
-    border-radius: 2rem;
-    padding: 0.35rem 0.5rem;
-    width: 40px;
-    margin-right: 1rem;
-  }
+.score {
+  font-size: 1.25rem;
+  font-weight: 500;
+  width: 30px;
+}
 
-  .score {
-    font-size: 1.25rem;
-    font-weight: 500;
-    width: 30px;
-  }
+.playerTurn {
+  border-left: 5px solid steelblue;
+}
 
-  .playerTurn {
-    border-left: 5px solid steelblue;
-  }
-
-  .leaderboard-heading {
-    padding: 0.5rem 1.25rem;
-    border-bottom: 1px solid lightgray;
-    font-size: 1.2rem;
-    font-weight: 600;
-  }
+.leaderboard-heading {
+  padding: 0.5rem 1.25rem;
+  border-bottom: 1px solid lightgray;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
 </style>
