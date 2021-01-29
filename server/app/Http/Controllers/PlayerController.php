@@ -12,8 +12,10 @@ class PlayerController extends Controller {
     $quiz = Quiz::wherePin($request->pin)->first();
     if (!$quiz) {
       return response(['message' => 'Invalid pin!']);
+    } if($quiz->current_question) {
+        return response(['message' => 'The quiz has already begun!']);
     }
-    $validData = $request->validate([
+    $request->validate([
       'name' => 'required|min:3|unique:players,name,NULL,id,quiz_id,' . $quiz->id,
       'pin' => 'required',
     ]);
