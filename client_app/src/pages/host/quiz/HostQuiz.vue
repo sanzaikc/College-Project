@@ -29,7 +29,8 @@
     </div>
     <div class="row mt-3">
       <div class="col-lg-3">
-        <Scoreboard v-if="gameStarted" :quizId="quizDetail.id" />
+        <Scoreboard v-if="gameStarted" :scores="scores" :turnOf="turnOf" />
+
         <div v-else>
           <h5>Participants</h5>
           <div v-if="players.length > 0">
@@ -47,7 +48,8 @@
         </div>
       </div>
       <div class="col-lg-9">
-        <HostView
+        <HostBoard
+          v-model="turnOf"
           :turnList="turnList"
           :allQuestions="allQuestions"
           @onGameStart="gameStarted = true"
@@ -59,14 +61,14 @@
 </template>
 
 <script>
-  import HostView from "@/components/hostQuiz/HostView";
+  import HostBoard from "@/components/hostQuiz/HostBoard";
   import Scoreboard from "@/components/Scoreboard";
 
   import { mapMutations, mapState } from "vuex";
 
   export default {
     components: {
-      HostView,
+      HostBoard,
       Scoreboard,
     },
 
@@ -75,6 +77,8 @@
         copied: false,
         gameStarted: false,
         turnList: [],
+        turnOf: "",
+        scores: [],
         // start: false,
         // selectedQuestion: null,
       };
@@ -89,10 +93,26 @@
       allQuestions() {
         return this.quizDetail.questions;
       },
+
+      quizId() {
+        return this.$route.params.id;
+      },
+    },
+
+    watch: {
+      players: {
+        immediate: true,
+        handler: function(nv) {
+          if (nv) {
+            this.initiateScores();
+          }
+        },
+      },
     },
 
     created() {
       this.listenForPlayerJoining();
+      this.listenForPlayerAnswer();
     },
 
     mounted() {
@@ -103,14 +123,41 @@
     methods: {
       ...mapMutations(["QUIZ_DETAIL", "ADD_PLAYERS"]),
 
+      initiateScores() {
+        this.scores = this.players.map((p) => {
+          return {
+            id: p.id,
+            name: p.name,
+            score: p.score,
+          };
+        });
+      },
+
       listenForPlayerJoining() {
-        window.Echo.channel("quizy" + this.$route.params.id).listen(
+        window.Echo.channel(`quizy${this.quizId}`).listen(
           "PlayerJoined",
           (e) => {
             e.player.score = 0;
             this.ADD_PLAYERS(e.player);
             this.$toasted.show(e.player.name + " joined!");
             this.turnList.push(e.player.id);
+          }
+        );
+      },
+
+      listenForPlayerAnswer() {
+        window.Echo.channel(`quizy${this.quizId}`).listen(
+          "PlayerAnswered",
+          (e) => {
+            let { scores: updatedScores } = e;
+            this.scores = this.scores.map((score) => {
+              let updatedScore = updatedScores.find(
+                (us) => us.player_id == score.id
+              );
+              return updatedScore
+                ? { ...score, score: updatedScore.score }
+                : score;
+            });
           }
         );
       },
@@ -141,14 +188,6 @@
         }
         window.getSelection().removeAllRanges();
       },
-
-      // startGame() {
-      //   if (this.players.length > 0) {
-      //     this.start = true;
-      //   } else {
-      //     alert("Not enough participants");
-      //   }
-      // },
 
       async endQuiz() {
         if (confirm("End this Quiz? ")) {

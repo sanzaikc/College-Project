@@ -22,10 +22,17 @@
                   : false
               "
               class="py-2"
-              :class="{'bg-secondary text-white' : selectedQuestions.includes(question.id)}"
+              :class="{
+                'bg-secondary text-white': selectedQuestions.includes(
+                  question.id
+                ),
+              }"
               v-for="question in categoryQuestion"
               :key="question.id"
-              @click="!selectedQuestions.includes(question.id) && setQuestion(question)"
+              @click="
+                !selectedQuestions.includes(question.id) &&
+                  setQuestion(question)
+              "
             >
               <div v-text="question.body" />
             </b-list-group-item>
@@ -58,7 +65,7 @@
           {{ option.body }}
         </b-badge>
       </div>
-       <b-button
+      <b-button
         block
         class="my-3"
         variant="primary"
@@ -77,7 +84,7 @@
   export default {
     props: {
       allQuestions: { type: Array },
-      turnList: {type: Array},
+      turnList: { type: Array },
     },
 
     data() {
@@ -156,10 +163,12 @@
 
       async changeCurrentQuestion() {
         try {
+          let turnId = this.turnList[this.turnIndex];
+          this.$emit("input", turnId);
           let { status } = await this.$store.dispatch("changeCurrentQuestion", {
             quizId: this.quizId,
             questionId: this.selectedQuestion.id,
-            playerId: this.turnList[this.turnIndex],
+            playerId: turnId,
           });
           this.turnIndex = (this.turnIndex + 1) % this.turnList.length;
           if (status === 200) {

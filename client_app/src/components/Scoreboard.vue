@@ -33,12 +33,6 @@
       turnOf: { type: Number },
     },
 
-    // data() {
-    //   return {
-    //     turnId: null,
-    //   };
-    // },
-
     computed: {
       showRanking() {
         return this.scores.filter((p) => p.score > 0);
