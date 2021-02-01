@@ -41,7 +41,9 @@ class QuestionController extends Controller {
       'image' => $path,
     ]));
 
-    foreach ($request->options as $option) {
+    $shuffledOptions = collect($request->options)->shuffle();
+
+    foreach ($shuffledOptions as $option) {
       $createdOption = $question->options()->create([
         'body' => $option["'body'"],
       ]);
