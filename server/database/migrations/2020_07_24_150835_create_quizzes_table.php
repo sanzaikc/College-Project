@@ -18,7 +18,9 @@ class CreateQuizzesTable extends Migration {
       $table->string('image')->nullable();
       $table->integer('pin')->nullable();
       $table->bigInteger('current_question')->nullable();
+      $table->enum('round_type', ['timer', 'buzzer'])->default('timer');
       $table->bigInteger('player_id')->nullable();
+      $table->boolean('can_answer')->default('true');
       $table->foreignId('user_id')->constrained()->onDelete('cascade');
       $table->timestamps();
     });
