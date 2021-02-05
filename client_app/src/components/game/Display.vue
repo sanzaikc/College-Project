@@ -36,9 +36,6 @@
       <b-button class="action-button" :disabled="timesUp" @click="submitAnswer">
         Confrim
       </b-button>
-      <b-button class="action-button" :disabled="timesUp">
-        Pass
-      </b-button>
     </div>
   </div>
 </template>
