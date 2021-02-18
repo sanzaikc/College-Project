@@ -34,13 +34,13 @@
 
     <div v-if="isPlayerTurn" class="actions my-2">
       <b-button class="action-button" :disabled="timesUp" @click="submitAnswer">
-        Confrim
+        Confirm
       </b-button>
     </div>
     <div v-if="isAudience" class="actions my-2">
       <b-button
         class="action-button"
-        :disabled="disableButton"
+        :disabled="disableButton && !timesUp"
         @click="showCorrectAnswer = true"
       >
         Show Answer
@@ -63,7 +63,7 @@
       return {
         selectedAns: null,
         hasAnswered: false,
-        optionColor: "active",
+        optionColor: !this.isAudience ? "active" : "",
         showCorrectAnswer: false,
         disableButton: true,
 
@@ -129,7 +129,7 @@
     methods: {
       reset() {
         this.hasAnswered = false;
-        this.optionColor = "active";
+        this.optionColor = !this.isAudience ? "active" : "";
         this.showCorrectAnswer = false;
         this.disableButton = true;
       },
@@ -171,7 +171,7 @@
           this.turnOf == this.playerId && this.correctSound.play();
         } else {
           this.disableButton = false;
-          this.optionColor = "wrong";
+          if (!this.isAudience) this.optionColor = "wrong";
           this.turnOf == this.playerId && this.wrongSound.play();
         }
       },
