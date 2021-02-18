@@ -73,6 +73,7 @@
         initialTimerValue: 30,
         time: 0,
         timer: null,
+        changeSound: new Audio(require("@/assets/sounds/change.mp3")),
       };
     },
 
@@ -203,6 +204,7 @@
         window.Echo.channel("quizy" + this.quizId).listen(
           "QuestionChanged",
           (e) => {
+            this.changeSound.play();
             this.quiz = {
               ...this.quiz,
               current_question: e.question,
