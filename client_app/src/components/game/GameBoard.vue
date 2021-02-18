@@ -57,210 +57,216 @@
 </template>
 
 <script>
-import $axios from "@/plugins/axios";
-import Display from "@/components/game/Display.vue";
-import Scoreboard from "@/components/Scoreboard.vue";
+  import $axios from "@/plugins/axios";
+  import Display from "@/components/game/Display.vue";
+  import Scoreboard from "@/components/Scoreboard.vue";
 
-export default {
-  components: { Display, Scoreboard },
+  export default {
+    components: { Display, Scoreboard },
 
-  data() {
-    return {
-      quiz: null,
-      quizEnded: false,
-      scores: [],
+    data() {
+      return {
+        quiz: null,
+        quizEnded: false,
+        scores: [],
 
-      initialTimerValue: 30,
-      time: 0,
-      timer: null,
-    };
-  },
-
-  computed: {
-    quizId() {
-      return this.$route.params.quizId;
+        initialTimerValue: 30,
+        time: 0,
+        timer: null,
+      };
     },
 
-    quizPin() {
-      return this.quiz.pin;
-    },
+    computed: {
+      quizId() {
+        return this.$route.params.quizId;
+      },
 
-    players() {
-      if (this.quiz) {
-        return this.quiz.players;
-      }
-      return [];
-    },
+      quizPin() {
+        return this.quiz.pin;
+      },
 
-    quizHasStarted() {
-      if (this.quiz) return !!this.quiz.current_question;
-      return false;
-    },
-
-    question() {
-      if (this.quiz && this.quiz.current_question)
-        return this.quiz.current_question;
-      return {};
-    },
-
-    options() {
-      return this.question && this.question.options;
-    },
-
-    isAudience() {
-      return this.$route.path.includes("audience");
-    },
-
-    playerTurnId() {
-      return this.quiz.player_id;
-    },
-
-    playerDetail() {
-      return this.scores.find((s) => s.id == this.$route.params.playerId);
-    },
-
-    correctAnswer() {
-      return this.question && this.question.answer;
-    },
-
-    timesUp() {
-      return this.time <= 0;
-    },
-
-    timerColor() {
-      function percentage(num, per) {
-        return (num / 100) * per;
-      }
-
-      if (this.time <= percentage(this.initialTimerValue, 20)) return "red";
-      if (this.time <= percentage(this.initialTimerValue, 50)) return "orange";
-      return "green";
-    },
-  },
-
-  watch: {
-    players: {
-      immediate: true,
-      handler: function(nv) {
-        if (nv) {
-          this.initiateScores();
+      players() {
+        if (this.quiz) {
+          return this.quiz.players;
         }
+        return [];
+      },
+
+      quizHasStarted() {
+        if (this.quiz) return !!this.quiz.current_question;
+        return false;
+      },
+
+      question() {
+        if (this.quiz && this.quiz.current_question)
+          return this.quiz.current_question;
+        return {};
+      },
+
+      options() {
+        return this.question && this.question.options;
+      },
+
+      isAudience() {
+        return this.$route.path.includes("audience");
+      },
+
+      playerTurnId() {
+        return this.quiz.player_id;
+      },
+
+      playerDetail() {
+        return this.scores.find((s) => s.id == this.$route.params.playerId);
+      },
+
+      correctAnswer() {
+        return this.question && this.question.answer;
+      },
+
+      timesUp() {
+        return this.time <= 0;
+      },
+
+      timerColor() {
+        function percentage(num, per) {
+          return (num / 100) * per;
+        }
+
+        if (this.time <= percentage(this.initialTimerValue, 20)) return "red";
+        if (this.time <= percentage(this.initialTimerValue, 50))
+          return "orange";
+        return "green";
       },
     },
-  },
 
-  created() {
-    this.listenForPlayerJoining();
-
-    this.listenForQuestionChange();
-
-    // this.listenForPlayerAnswer();
-
-    this.listenForPass();
-
-    this.listenForQuizEnd();
-  },
-
-  mounted() {
-    // request for quiz details; this request's response will return players, player's score, current question
-    this.fetchQuizDetails();
-  },
-
-  methods: {
-    fetchQuizDetails() {
-      $axios
-        .get(`/getQuizDetails/${this.quizId}`)
-        .then((res) => {
-          if (res.status === 200) {
-            this.quiz = res.data.quiz;
+    watch: {
+      players: {
+        immediate: true,
+        handler: function(nv) {
+          if (nv) {
+            this.initiateScores();
           }
-        })
-        .catch((err) => console.log(err))
-        .finally(() => console.log("at last"));
+        },
+      },
     },
 
-    listenForPlayerJoining() {
-      window.Echo.channel("quizy" + this.quizId).listen("PlayerJoined", (e) => {
-        this.quiz = { ...this.quiz, players: e.players };
+    created() {
+      this.listenForPlayerJoining();
 
-        this.$toasted.show(e.player.name + " joined!");
-      });
+      this.listenForQuestionChange();
+
+      // this.listenForPlayerAnswer();
+
+      this.listenForPass();
+
+      this.listenForQuizEnd();
     },
 
-    initiateScores() {
-      this.scores = this.players.map((player) => ({
-        id: player.id,
-        name: player.name,
-        score: player.score ? player.score.score : 0,
-      }));
+    mounted() {
+      // request for quiz details; this request's response will return players, player's score, current question
+      this.fetchQuizDetails();
     },
 
-    listenForQuestionChange() {
-      window.Echo.channel("quizy" + this.quizId).listen(
-        "QuestionChanged",
-        (e) => {
-          this.quiz = {
-            ...this.quiz,
-            current_question: e.question,
-            player_id: e.quiz.player_id,
-            players: e.players,
-          };
+    methods: {
+      fetchQuizDetails() {
+        $axios
+          .get(`/getQuizDetails/${this.quizId}`)
+          .then((res) => {
+            if (res.status === 200) {
+              this.quiz = res.data.quiz;
+            }
+          })
+          .catch((err) => console.log(err))
+          .finally(() => console.log("at last"));
+      },
 
-          this.time = this.initialTimerValue;
-          this.startTimer();
-        }
-      );
-    },
+      listenForPlayerJoining() {
+        window.Echo.channel("quizy" + this.quizId).listen(
+          "PlayerJoined",
+          (e) => {
+            this.quiz = { ...this.quiz, players: e.players };
 
-    listenForQuizEnd() {
-      window.Echo.channel("quizy" + this.quizId).listen("QuizEnded", (e) => {
-        if (e) {
-          this.quizEnded = true;
-        }
-      });
-    },
-
-    updateScores(updatedScores) {
-      this.scores = this.scores.map((score) => {
-        let updatedScore = updatedScores.find((us) => us.player_id == score.id);
-        return updatedScore ? { ...score, score: updatedScore.score } : score;
-      });
-    },
-
-    listenForPass() {},
-
-    startTimer() {
-      if (!this.timer) {
-        this.timer = setInterval(() => {
-          if (this.time > 0) {
-            this.time--;
-          } else {
-            clearInterval(this.timer);
-            this.resetTimer();
+            this.$toasted.show(e.player.name + " joined!");
           }
-        }, 1000);
-      }
-    },
+        );
+      },
 
-    stopTimer() {
-      clearInterval(this.timer);
-      this.timer = null;
-    },
+      initiateScores() {
+        this.scores = this.players.map((player) => ({
+          id: player.id,
+          name: player.name,
+          score: player.score ? player.score.score : 0,
+        }));
+      },
 
-    resetTimer() {
-      this.stopTimer();
-      this.time = 0;
+      listenForQuestionChange() {
+        window.Echo.channel("quizy" + this.quizId).listen(
+          "QuestionChanged",
+          (e) => {
+            this.quiz = {
+              ...this.quiz,
+              current_question: e.question,
+              player_id: e.quiz.player_id,
+              players: e.players,
+            };
+
+            this.time = this.initialTimerValue;
+            this.startTimer();
+          }
+        );
+      },
+
+      listenForQuizEnd() {
+        window.Echo.channel("quizy" + this.quizId).listen("QuizEnded", (e) => {
+          if (e) {
+            this.quizEnded = true;
+          }
+        });
+      },
+
+      updateScores(updatedScores) {
+        this.scores = this.scores.map((score) => {
+          let updatedScore = updatedScores.find(
+            (us) => us.player_id == score.id
+          );
+          return updatedScore ? { ...score, score: updatedScore.score } : score;
+        });
+      },
+
+      listenForPass() {},
+
+      startTimer() {
+        if (!this.timer) {
+          this.timer = setInterval(() => {
+            if (this.time > 0) {
+              this.time--;
+            } else {
+              clearInterval(this.timer);
+              this.resetTimer();
+            }
+          }, 1000);
+        }
+      },
+
+      stopTimer() {
+        clearInterval(this.timer);
+        this.timer = null;
+      },
+
+      resetTimer() {
+        this.stopTimer();
+        this.time = 0;
+      },
     },
-  },
-};
+  };
 </script>
 
 <style>
-.info-card {
-  background: white;
-  border-radius: 0.25rem;
-  box-shadow: 0 2px 6px rgb(224, 210, 210);
-  padding: 1rem;
-  background: rgba(85, 157, 216, 0.104);
-}
+  .info-card {
+    background: white;
+    border-radius: 0.25rem;
+    box-shadow: 0 2px 6px rgb(224, 210, 210);
+    padding: 1rem;
+    background: rgba(85, 157, 216, 0.104);
+  }
 </style>
