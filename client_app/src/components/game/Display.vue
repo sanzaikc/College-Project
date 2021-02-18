@@ -69,6 +69,7 @@
 
         correctSound: new Audio(require("@/assets/sounds/correct.mp3")),
         wrongSound: new Audio(require("@/assets/sounds/wrong.mp3")),
+        timesUpSound: new Audio(require("@/assets/sounds/airhorn.mp3")),
       };
     },
 
@@ -118,6 +119,12 @@
       showCorrectAnswer: {
         handler: function(nv) {
           if (nv) this.correctSound.play();
+        },
+      },
+
+      timesUp: {
+        handler: function(nv) {
+          if (nv) this.timesUpSound.play();
         },
       },
     },
