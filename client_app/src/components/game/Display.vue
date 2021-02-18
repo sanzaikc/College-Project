@@ -17,9 +17,16 @@
       <div
         class="option"
         v-for="{ id, body } in options"
+        :ref="id"
         :key="id"
         @click="handleSelection(id)"
-        :class="id === selectedAns ? optionColor : ''"
+        :class="
+          id === selectedAns
+            ? optionColor
+            : id === correctAnswer.option_id && showCorrectAnswer
+            ? 'correct'
+            : ''
+        "
       >
         {{ body }}
       </div>
@@ -28,9 +35,6 @@
     <div v-if="isPlayerTurn" class="actions my-2">
       <b-button class="action-button" :disabled="timesUp" @click="submitAnswer">
         Confrim
-      </b-button>
-      <b-button class="action-button" :disabled="timesUp">
-        Pass
       </b-button>
     </div>
   </div>
@@ -51,6 +55,7 @@
         selectedAns: null,
         hasAnswered: false,
         optionColor: "active",
+        showCorrectAnswer: false,
 
         correctSound: new Audio(require("@/assets/sounds/correct.mp3")),
         wrongSound: new Audio(require("@/assets/sounds/wrong.mp3")),
@@ -105,6 +110,7 @@
       reset() {
         this.hasAnswered = false;
         this.optionColor = "active";
+        this.showCorrectAnswer = false;
       },
 
       handleSelection(selectedId) {
@@ -138,6 +144,7 @@
 
       checkAnswer(optionSelected) {
         this.selectedAns = optionSelected;
+        this.showCorrectAnswer = true;
         if (optionSelected == this.correctAnswer.option_id) {
           this.optionColor = "correct";
           this.turnOf == this.playerId && this.correctSound.play();

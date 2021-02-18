@@ -21,6 +21,7 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::apiResource('quizzes', 'QuizController')->except('show', 'update');
   Route::post('quizzes/{quiz}', 'QuizController@update');
   Route::post('quizzes/end/{quiz}', 'QuizController@end');
+  Route::post('quizzes/changeRound/{quiz}', 'QuizController@changeRound');
 
   // question route
   Route::apiResource('questions', 'QuestionController')->except('show', 'update');
@@ -37,3 +38,5 @@ Route::post('player', 'PlayerController@create');
 Route::post('score', 'ScoreController@store');
 // get quiz details for player
 Route::get('getQuizDetails/{quiz}', 'QuizController@getQuizDetails');
+// player pressed buzzer
+Route::post('player/buzz', 'PlayerController@buzz');
