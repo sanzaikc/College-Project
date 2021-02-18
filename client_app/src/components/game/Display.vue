@@ -37,6 +37,15 @@
         Confrim
       </b-button>
     </div>
+    <div v-if="isAudience" class="actions my-2">
+      <b-button
+        class="action-button"
+        :disabled="disableButton"
+        @click="showCorrectAnswer = true"
+      >
+        Show Answer
+      </b-button>
+    </div>
   </div>
 </template>
 
@@ -56,6 +65,7 @@
         hasAnswered: false,
         optionColor: "active",
         showCorrectAnswer: false,
+        disableButton: true,
 
         correctSound: new Audio(require("@/assets/sounds/correct.mp3")),
         wrongSound: new Audio(require("@/assets/sounds/wrong.mp3")),
@@ -92,12 +102,22 @@
           !this.hasAnswered && this.playerId && this.turnOf == this.playerId
         );
       },
+
+      isAudience() {
+        return this.$route.path.includes("audience");
+      },
     },
 
     watch: {
       question: {
         handler: function(nv) {
           if (nv) this.reset();
+        },
+      },
+
+      showCorrectAnswer: {
+        handler: function(nv) {
+          if (nv) this.correctSound.play();
         },
       },
     },
@@ -111,6 +131,7 @@
         this.hasAnswered = false;
         this.optionColor = "active";
         this.showCorrectAnswer = false;
+        this.disableButton = true;
       },
 
       handleSelection(selectedId) {
@@ -144,11 +165,12 @@
 
       checkAnswer(optionSelected) {
         this.selectedAns = optionSelected;
-        this.showCorrectAnswer = true;
         if (optionSelected == this.correctAnswer.option_id) {
+          this.showCorrectAnswer = true;
           this.optionColor = "correct";
           this.turnOf == this.playerId && this.correctSound.play();
         } else {
+          this.disableButton = false;
           this.optionColor = "wrong";
           this.turnOf == this.playerId && this.wrongSound.play();
         }
